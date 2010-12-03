@@ -1,0 +1,103 @@
+I've been thinking about this for a little while now. Let's have some
+programming fun! To encourage 4.0 use and the testing thereof, let's have a
+little contest. Depending on how it goes, we may make this into a weekly thing
+for a while. The rules overall rules are simple... Complete the task in Euphoria
+(any version), include in a comment at the top of the file your OpenEuphoria
+user name. The scoring is a little more complex (and can be modified for the
+next contest if good ideas are given):
+
+
+# 1 point is given for completing the task according to the spec
+# 1 point is given for using Euphoria 4.0
+# 1 point is given for each 4.0 language construct you use
+# 1 point is given for each 4.0 standard library method you use
+# 1 point is given if your program is in the top 20% for speed
+# 1 point is given if your program is in the top 20% for LOC (smallest, not largest!)... comment lines do not count
+
+\\
+This is basically going to be on the honor system. Each person submitting should
+count the total points they earn (besides the last two of course) and submit
+that as a comment in the top of the file. Why? It would be a lot of work for one
+person to figure this out for all the submissions. We are doing it for fun. Now,
+if someone is caught cheating... that wouldn't be very cool, play nice!
+
+
+Ok... So, let's say the contest was "Create a program that says 'Hello, World!'"
+... A possible submission would be:
+
+<eucode>
+-- User: jeremy
+-- 3 points (per spec, 4.0, 1 library method)
+
+include std/text.e
+puts(1, trim("Hello, World!\n"))
+</eucode>
+
+(trim added for point scoring example only!). Do not count each use of a method,
+only count once.
+
+Ok... So, let's start with a simple contest for our first one...
+
+**LCD Numbers**
+
+Accept on the command line any number of arguments. Each argument will be a
+number up to 5 digits long. The program should output on their own line each
+number in a standard text based LCD number. A single space should be placed
+between each number. Numbers should look like:
+
+{{{
+     --    --        __   --   --   --   --   --
+ |     |     | |  | |    |       | |  | |  | |  |
+ |     |     | |  | |    |       | |  | |  | |  |
+     --    --   --   --   --        --   --   
+ |  |        |    |    | |  |    | |  |    | |  |  
+ |  |        |    |    | |  |    | |  |    | |  |
+     --    --        --   --        --        --
+}}}
+
+They are 4 characters wide and 7 characters tall. An extra point will be given
+if your program takes an extra parameter to vary the digit size proportionately.
+i.e. 3x5, or 8x14, etc. i.e. 3x5 would be:
+
+{{{
+    _
+ |   |
+    -
+ | |
+    -
+}}}
+
+The parameter should be the width: 3, 4, 5, 8, 256 :-)
+
+Sample: 
+
+{{{
+$ lcd -w 4 343
+ --        -- 
+   | |  |    |
+   | |  |    |
+ --   --   -- 
+   |    |    |
+   |    |    |
+ --        -- 
+}}}
+
+Submissions should be made via email to myself, jeremy (spat) cowgar/com.
+Submissions will be accepted through Saturday morning, December 4th, no later
+than 9am EST. The winner will be announced that evening. Discussion can occur on
+the forums about the contest if you wish but code should not be put on the forum
+on how to accomplish the task in whole or part.
+
+We can discuss the contest, scoring, future "problems" to solve, since this is
+the first one. I thought it may be fun to allow the winner of this contest to
+choose and accept the submissions of the next contest in order to allow everyone
+to participate in the fun (i.e. in this one it wouldn't really be fair for me to
+compete as I could wait for everyone's to come in and pick the best one stealing
+ideas for each one if I wanted :-/).
+
+
+I hope everyone has fun with this idea and that we get a lot of submissions.
+
+Have Fun w/the contest!
+
+Jeremy
