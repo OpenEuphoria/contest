@@ -1,10 +1,29 @@
 --
 -- LCD Printer
 --
--- Score: 13 -> 1 (spec), 1 (scaling), 1 (4.0), 1 (def param), 1 (0b#s), 
---        1 (ignore return value) 7 (stdlib)
+-- Speed: 0.022700
 --
--- stdlib: iff, columnize, mapping, series, to_number, map:get, cmd_parse
+-- Score: 14
+--
+-- Bonus Points:
+--   (1) followed spec
+--   (1) used 4.0
+--   (1) optional scaling
+--
+-- 4.0 features:
+--   (1) assign on create
+--   (1) default method parameters
+--   (1) 0b# syntax
+--   (1) ignore return value
+--
+-- 4.0 methods:
+--   (1) iff
+--   (1) columnize
+--   (1) mapping
+--   (1) series
+--   (1) to_number
+--   (1) map:get
+--   (1) cmd_parse
 --
 
 include std/cmdline.e
