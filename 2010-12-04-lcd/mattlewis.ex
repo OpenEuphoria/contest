@@ -1,3 +1,85 @@
+/*
+User: mattlewis
+
+Speed: 0.023325s per iteration
+
+Score: 58
+
+Bonus Points:
+	1:  Used Euphoria v4
+	1:  Followed spec
+	1:  Numbers can be scaled from 1..
+
+4.0 Features:
+	$ as end of list marker
+	assign on declare
+	backtick unescaped quote
+	call function declared after point of use
+	case fallthru
+	declare default parameter value
+	declare in middle of block
+	declare in smaller scope
+	default namespace declared
+	delete()
+	elsifdef
+	enum
+	enum type
+	head() built-in sequence op
+	ifdef
+	ignore function return
+	labeled loop
+	labeled loop exit
+	left line padding on unescaped, multiline quote
+	multi-line / block comment
+	replace() built-in sequence op
+	switch / case
+	tail() built-in sequence op
+	used default namespace
+	use default parameter value
+	with inline X
+	without inline
+
+4.0 Methods:
+	cmdline:parse
+	console:any_key
+	console:display
+	convert:int_to_bits
+	convert:to_number
+	map:get
+	map:has
+	math:max
+	math:or_all
+	regex:find_replace
+	regex:new
+	search:begins
+	search:find_all_but
+	search:find_any
+	search:find_replace
+	stdget:value
+	stdseq:apply
+	stdseq:breakup
+	stdseq:columnize
+	stdseq:combine
+	stdseq:join
+	stdseq:series
+	stdseq:transmute
+	stdseq:vslice
+	text:upper
+	types:t_digit
+	types:t_xdigit
+	utils:iff
+
+INFORMATION:
+	222:  Lines of code (according to coverage metrics)
+	225:  Lines of code including ifdef'd out lines
+	  5:  Extra Features!
+			Accept Decimal, Hex, Octal, Binary, Floating Point or Scientific Notation
+			Print any combination of Decimal, Hex, Octal, Binary, Floating Point, Scientific Notation
+			Optional line wrapping
+			Optional formatting that uses Underscores instead of minus signs, and shorter characters for easier to read numbers
+			Run with "-d JEREMY" for extra fun!
+*/
+
 namespace lcd
 
 ifdef MAXIMUM_INLINING then
@@ -404,78 +486,3 @@ end function
 
 
 lcd:main()
-
-/*
-INFORMATION:
-	222:  Lines of code (according to coverage metrics)
-	225:  Lines of code including ifdef'd out lines
-	  5:  Extra Features!
-			Accept Decimal, Hex, Octal, Binary, Floating Point or Scientific Notation
-			Print any combination of Decimal, Hex, Octal, Binary, Floating Point, Scientific Notation
-			Optional line wrapping
-			Optional formatting that uses Underscores instead of minus signs, and shorter characters for easier to read numbers
-			Run with "-d JEREMY" for extra fun!
-SCORING:
-	 58:  Overall
-	 --   ---------------------------------------------------------------
-	  1:  Used Euphoria v4
-	  1:  Followed spec
-	  1:  Numbers can be scaled from 1..
-	 27:  Euphoria v4 language constructs:
-			$ as end of list marker
-			assign on declare
-			backtick unescaped quote
-			call function declared after point of use
-			case fallthru
-			declare default parameter value
-			declare in middle of block
-			declare in smaller scope
-			default namespace declared
-			delete()
-			elsifdef
-			enum
-			enum type
-			head() built-in sequence op
-			ifdef
-			ignore function return
-			labeled loop
-			labeled loop exit
-			left line padding on unescaped, multiline quote
-			multi-line / block comment
-			replace() built-in sequence op
-			switch / case
-			tail() built-in sequence op
-			used default namespace
-			use default parameter value
-			with inline X
-			without inline
-	28:  Euphoria v4 standard library routines used
-			cmdline:parse
-			console:any_key
-			console:display
-			convert:int_to_bits
-			convert:to_number
-			map:get
-			map:has
-			math:max
-			math:or_all
-			regex:find_replace
-			regex:new
-			search:begins
-			search:find_all_but
-			search:find_any
-			search:find_replace
-			stdget:value
-			stdseq:apply
-			stdseq:breakup
-			stdseq:columnize
-			stdseq:combine
-			stdseq:join
-			stdseq:series
-			stdseq:transmute
-			stdseq:vslice
-			text:upper
-			types:t_digit
-			types:t_xdigit
-			utils:iff
-*/
