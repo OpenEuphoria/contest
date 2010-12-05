@@ -1,18 +1,29 @@
 -- User: cklester
--- ? points
-
--- point count:
--- +1 (per spec)
--- +1 (Eu4.0)
--- +1 (clever 1x1 solution)
--- +1 (clever 2x2 solution)
--- +1 (features:option to scale digit '1' or not)
--- +1 (features:option to clear screen)
--- +? (Eu4.0 constructs)
--- +? (Eu4.0 std lib methods)
-
--- lcdc.ex
--- LCD on the Console program
+--
+-- Speed: 0.023790 per iteration
+--
+-- Points: 14
+--
+-- Bonus Points:
+--   (1) followed spec
+--   (1) used 4.0
+--   (1) optional scaling
+--
+-- 4.0 features:
+--   (1) assign on create
+--   (1) switch
+--   (1) multi-line strings
+--   (1) default method parameters
+--   (1) scoped variables
+--   (1) public method
+--
+-- 4.0 methods:
+--   (1) insert
+--   (1) splice
+--   (1) remove
+--   (1) maybe_any_key
+--   (1) write_lines
+--
 
 include std/get.e
 include std/console.e
