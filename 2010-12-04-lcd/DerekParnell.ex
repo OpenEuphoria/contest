@@ -7,6 +7,7 @@
 --
 -- Bonus Points:
 --   (1) used 4.0
+--   (1) per spec
 --
 -- 4.0 features:
 --   (1) labeled loops
