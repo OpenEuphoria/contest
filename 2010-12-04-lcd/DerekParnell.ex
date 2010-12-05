@@ -1,7 +1,7 @@
 --
 -- User: DerekParnell
 --
--- Speed: ???
+-- Speed: 0.022520
 --
 -- Points: 7
 --
