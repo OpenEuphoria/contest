@@ -1,9 +1,27 @@
+--
 -- User: Pete_E
--- Points: no idea - just for fun
+--
+-- Speed: 0.023635 per iteration
+--
+-- Points: 9
+--
+-- Bonus Points:
+--   (1) top 20% for size
+--   (1) followed spec
+--   (1) used 4.0
+--   (1) optional scaling
+--
+-- 4.0 features:
+--   (1) assign on create
+--   (1) ignore function result
+--
+-- 4.0 methods:
+--   (1) join
+--   (1) columnize
+--   (1) to_integer
+--
 
-include std/text.e
 include std/sequence.e
-include std/cmdline.e
 include std/convert.e
 
 constant segmap = {
