@@ -1,5 +1,24 @@
-include std/map.e
-include std/cmdline.e
+--
+-- User: DerekParnell
+--
+-- Speed: ???
+--
+-- Points: 7
+--
+-- Bonus Points:
+--   (1) used 4.0
+--
+-- 4.0 features:
+--   (1) labeled loops
+--   (1) multi-line strings
+--   (1) $ list terminator
+--   (1) continue w/label
+--
+-- 4.0 methods:
+--   (1) display
+--   (1) crash
+--
+
 include std/console.e
 include std/math.e
 include std/error.e
