@@ -54,9 +54,7 @@ sequence char
 
 	switch x do
 	 case 1 then
-		-- send a color-coded or unique design
-		text_color( colors[i+1] )
-		char = {"-"}
+		char = {colors[i+1]}
 		
 	case 2 then
 		char = digits2[ i+1 ]

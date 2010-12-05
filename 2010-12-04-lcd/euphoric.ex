@@ -138,7 +138,14 @@ integer
 	if colorize then
 		text_color(BRIGHT_GREEN)
 	end if
-	write_lines( 1, digits[1] )
+	if digits[2] = 1 then
+		for t=1 to length(digits[1][1]) do
+			text_color( digits[1][1][t] )
+			puts(1,"-")
+		end for
+	else
+		write_lines( 1, digits[1] )
+	end if
 	text_color(WHITE)
 	
 	-- it would be easy to just print the remaining LCD characters
