@@ -30,9 +30,10 @@ function glob_patterns(sequence patterns)
 end function
 
 sequence cmds = glob_patterns(command_line())
-for i = 3 to length(cmds) do
+
+for i = 1 to length(cmds) do
 	sequence fname = cmds[i]
-	if equal(fname, ".") or equal(fname, "..") then
+	if equal(fname, ".") or equal(fname, "..") or not file_exists( fname ) then
 		continue
 	end if
 	
