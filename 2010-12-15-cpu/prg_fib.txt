@@ -1,0 +1,18 @@
+237 - r3 = 6   (loop address)
+299 - r9 = 5   (loop counter)
+799 - r9 *= r9 (81)
+499 - r9 *= 9  (729)
+210 - r0 = 0   (first)
+221 - r1 = 1   (second)
+?1  -          (print first)
+561 - r6 = r1  (first) ---> r3 loop address <---
+572 - r7 = r2  (second)
+667 - r6 += r7 (tmp = first + second)
+512 - r1 = r2  (first = second
+526 - r2 = r6  (second = tmp)
+?1  -          (print first)
+280 - r8 = 0   (location of our -1)
+888 - r8 = -1  (set r8 from ram addr 0)
+698 - r9 += r8 (deincrement loop counter)
+039 -          (goto r3 if r9 != 0)
+100 -          (halt)
