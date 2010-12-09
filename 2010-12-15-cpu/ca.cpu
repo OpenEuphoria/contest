@@ -1,0 +1,96 @@
+205
+402
+302 -- jump to 12 (over subroutines)
+000
+229 -- function for getting a line pointer (REG.0 = row#, REG.1=return, pointer returned in REG.2)
+821 -- REG.2 = ROW.2 pointer
+706 -- see if we found the right line by decrementing REG.0
+019 -- If REG.0 = 1, we found it...
+010 -- Return
+228
+821
+011 -- Return!
+205 Start with 5...calculating repetition
+405 Make it 25
+212
+901 WIDTH is in RAM[2]
+209 This is the WIDTH
+213 We'll store it at RAM[3]
+910
+205 Get ready to store the pointer to ROW1
+404 
+301 The row proper starts at 21
+218 
+901 ROW1 pointer in RAM[8]
+222
+832 Put WIDTH into REG[3]
+323 Add the padding REG[2] += REG[3]
+602 Add the width to figure out where to put ROW2 in RAM
+205 Get ready to store the pointer to ROW2
+219 
+921 ROW2 pointer in RAM[9]
+332 Add spacing to REG[3]
+432 Double it -- this is our loop counter for zeroing out that RAM
+260 Use REG[6] for decrementing
+866 Put -1 in REG[6]
+258
+845 Put the ROW1 pointer in REG[4]
+646
+200 REG[0] = 0
+277 REG[7] will hold the branch target
+476 7*6 = 42
+370 +0 = 42 (line 43)
+904	ZERO it out! -----  BRANCH TARGET!
+636 Decrement REG[3], the loop counter
+341 Increment pointer in REG[]
+073 Jump back as needed!
+204 rules pointer at RAM[4]
+215 
+655 they'll start at RAM[10]
+910
+201 -- First rule
+905
+251
+201 -- Second rule
+905
+251
+201 -- Third rule
+905
+251
+200 -- Fourth rule
+905
+251
+200 -- Fifth rule
+905
+251
+200 -- Sixth rule
+905
+251
+201 -- Seventh rule
+905
+299 -- REPLACE THE ZERO WITH THE BRANCH FOR WHERE WE'LL INIITALIZE (GOSUB!)
+499 -- Multiply (replace the ZERO)
+491 -- Multiply (replace the ZERO)
+399 -- Add (replace the ZERO)
+288 -- THIS WILL BE WHERE THE SUBROUTINE RETURNS TO
+489 -- 72
+386 -- 78 (line 79)         this could be some arbitrary amount of 
+099 -- GOSUB INITIALIZE!    initialization, so tack it on the end
+295 -- REG[9] will be our overall loop counter for how many generations
+455 -- Multiply to adjust generation count
+350 -- Add to adjust generation count
+205
+995 -- Store the loop counter in RAM.5
+281 -- REG[8] stores the row we're writing to
+351
+985 RAM.6 has the writng row
+272 -- REG[7] stores the row we're reading from
+351
+975 RAM.7 has the reading row
+100
+208 -- SUBROUTINE INITIALIZE <------
+800 -- Put the ROW[1] pointer into REG[0]
+309 -- Move over some...
+211
+910
+088 -- RETURN FROM SUBROUTINE
