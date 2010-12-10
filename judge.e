@@ -71,7 +71,11 @@ atom fn
 	load_contestants()
 	load_programs()
 	load_checker()
-	
+
+	if atom(dir(CONTEST_DIR & "\\results\\")) then
+		create_directory(CONTEST_DIR & "\\results\\")
+	end if
+		
 	if integer(CHECKER) then
 		fn = open(CONTEST_DIR & "\\results\\checker.txt","w")
 		print(fn,PROGRAMS)
