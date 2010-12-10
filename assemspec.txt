@@ -1,0 +1,73 @@
+= CPU Assembler =
+
+== The architecure of the CPU ==
+The CPU consists of three types of storage.
+# Register. There are ten registers, numbered 0 to 9.  When the CPU is booted, all registers
+  are set to the value 0.
+# RAM. There are 1000 RAM locations, numbered 0 to 999. When the CPU is booted, all RAM
+  is set to the value 0, except for RAM location 0, which is set to -1.
+# Instruction. There is a an undefined number of instruction locations. This is were
+ the program code is stored and once a program is loaded it is read only. Instructions
+ are numbered from 0 by 1 to the last instruction. Each instruction occupies exactly
+ one location.
+
+== Instruction Set ==
+
+|= Instruction |= Operand(s) |= Machine Instruction(s) |= Description                                   
+|   halt       | (none)      | 100 | Stops execution
+|   set        | Rn, i       | 2ni | Copies a literal value 'i' to register 'n'
+|   set        | Rn, label   | 2ni [3ni...] | Copies a location of 'label' to register 'n'
+|   set        | Rn, Rm      | 5nm | Copies register 'm' to register 'n'
+|   set        | Rn, [Rm]    | 8nm | Copies the RAM value whose address is in \\
+                                      register 'm' to register 'n'       
+|   set        | [Rm], Rn    | 9nm | Copies the value in register 'n' to the \\
+                                      RAM location whose address is in register 'm'
+|   add        | Rn, i       | 3ni | Adds the literal value 'i' to register 'n'
+|   add        | Rn, Rm      | 6nm | Adds register 'm' to register 'n'
+|   mul        | Rn, i       | 4ni | Multiply register 'n' by the literal value 'i'
+|   mul        | Rn, Rm      | 7nm | Multiply register 'n' by register 'm'
+|   jmpz       | Rn, Rm      | 0nm | Set the intruction pointer to the value \\
+                                      in register 'n' if register 'm' is not zero. 
+|   outl       | Rn          | ?n  | Send to the console, the text representation of \\
+                                      the value in register 'n' followed by a newline
+|   outs       | Rn          | ??n | Send to the console, the text representation of \\
+                                      the value in register 'n' followed by a space
+|   nop        | (none)      | 300 | Does nothing
+
+== Example ==
+{{{
+; Fibonacci series
+ set R3, print  ; Get location of loop start
+ 
+ ; Get -1 into R8
+ set R8, 0
+ set R8, [R8]
+ 
+ ; Calculate the number of iterations to do (729)
+ set R9, 9  ; = 9
+ mul R9, 9  ; = 81
+ mul R9, 9  ; = 729
+ 
+ ; Initialize first two outputs
+ set R1, 0 
+ outl R1 
+ set R2, 1 
+
+ ; Here is the looping part
+print:
+ outl R2   ; output the current number
+ 
+ set R4, R2 ; save R2
+ add R2, R1 ; Calc next current number
+ set R1, R4 ; set 'prev' number
+ 
+ ; Decrement the interation counter.
+ add R9, R8
+ 
+ ; Continue if not done yet.
+ jmpz R3, R9
+ 
+ ; All done.
+ halt
+
+}}}
