@@ -10,17 +10,30 @@ sequence
 	cmd = command_line()
 	
 if length(cmd) < 3 then -- default for testing from editor
-	cmd = {"","","2010-12-15-cpu"}
+	cmd = {"","","2010-12-04-lcd"}
 end if
 
 set_contest_dir( cmd[3] )
+-- cmd = append(cmd,"-c")
+
+-- optional -c will clear all results
+if find("-c",cmd) then
+	clear_results()
+end if
 
 if not has_changed() then
 	puts(1,"Nothing has changed.")
 else
-	run_token_count()
+	judge_token_count()
+	judge_loc()
+	judge_filesize()
 end if
 
 display_token_results()
+maybe_any_key("\n\n")
 
+display_loc_results()
+maybe_any_key("\n\n")
+
+display_filesize_results()
 maybe_any_key("\n\n")
