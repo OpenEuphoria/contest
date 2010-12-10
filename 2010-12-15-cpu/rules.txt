@@ -20,7 +20,7 @@ exception of the print instructions. The encoding is as follows:
 | 100 | halt
 | 2dn | set register ##d## to ##n##
 | 3dn | add ##n## to register ##d##
-| 4dn | multiply ##d## by ##n##
+| 4dn | multiply register ##d## by ##n##
 | 5ds | set register ##d## to the value of register ##s##
 | 6ds | add the value of register ##s## to register ##d##
 | 7ds | multiply register ##d## by the value of register ##s##
@@ -30,8 +30,8 @@ exception of the print instructions. The encoding is as follows:
 | ?d  | print the value of register ##d## with a trailing newline
 | ??d | print the value of register ##d## with a trailing space
 
-All registers initially contain ##000##. Anything after the 3 digit instruction is a 
-comment.
+All registers initially contain ##000##. Anything after the 3 digit instruction
+is a comment.
 
 An example program:
 
@@ -48,14 +48,15 @@ $ eui cpu.ex prog1.txt
 5
 }}}
 
-Let's do this a bit differently. Please state here on this message if you are going to 
-participate. That will make things more interesting. As with the last contest, the contest 
-can be discussed here but code and algorithms should not be discussed in any detail.
+Let's do this a bit differently. Please state here on this message if you are
+going to participate. That will make things more interesting. As with the last
+contest, the contest can be discussed here but code and algorithms should not be
+discussed in any detail.
 
-**Deadline is 1 week, i.e. 7PM EST December 15th 2010.** Please do not send me submissions 
-before Monday. I would like to work on my own solution w/o being influenced. Mine will not 
-count, but would like to have fun too :-) After Monday, please send submissions to 
-jeremy A.T. cowgar dot com.
+**Deadline is 1 week, i.e. 7PM EST December 15th 2010.** Please do not send me
+submissions before Monday. I would like to work on my own solution w/o being
+influenced. Mine will not count, but would like to have fun too :-) After
+Monday, please send submissions to jeremy A.T. cowgar dot com.
 
 **Updates**
 
@@ -67,5 +68,21 @@ jeremy A.T. cowgar dot com.
   to let the program crash
 * ??d should print a trailing space
 
-Submissions will be added to our [[hg:contest]] repository. To count your tokens, you may use 
-the token_count program found there.
+**Sample test cases**
+
+Sample test cases are located on our contest SCM server at
+[[hg:contest/file/default/2010-12-15-cpu]]. See the ##.cpu## and ##.out## files.
+Example testing
+
+{{{
+% eui myapp.ex basics.cpu > basics.mine
+% diff basics.mine basics.out
+}}}
+
+If your application crashes or has a different output then your CPU program is
+not functioning as expected.
+
+**Final Words**
+
+Submissions will be added to our [[hg:contest]] repository. To count your
+tokens, you may use the token_count program found there.
