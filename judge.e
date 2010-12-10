@@ -7,20 +7,25 @@ include std/text.e
 
 include euphoria/tokenize.e
 
-sequence CONTESTANTS, CONTEST_DIR, PROGRAMS
+sequence CONTESTANTS, CONTEST_DIR, PROGRAMS,
+	ENTRIES = "entries" & SLASH,
+	RESULTS = "results" & SLASH
 object CHECKER
 
 enum TOKENS,FILESIZE,LOC--,SPEED
 sequence results = repeat({},3)
 
 public procedure set_contest_dir(sequence d)
+	if d[$] != SLASH then
+		d &= SLASH
+	end if
 	CONTEST_DIR = d
 end procedure
 
 procedure load_contestants()
 sequence
 	prog_list = {{},{}},
-	dir_list = dir(CONTEST_DIR & "\\entries\\")
+	dir_list = dir(CONTEST_DIR & ENTRIES)
 
 	for t=1 to length(dir_list) do
 		if find('d',dir_list[t][D_ATTRIBUTES]) and find(dir_list[t][D_NAME],{".",".."}) = 0 then
@@ -30,7 +35,7 @@ sequence
 	end for
 	
 	for t=1 to length( prog_list[1] ) do
-		dir_list = dir( CONTEST_DIR & "\\entries\\" & prog_list[1][t] & "\\*.ex" )
+		dir_list = dir( CONTEST_DIR & ENTRIES & prog_list[1][t] & SLASH & "*.ex" )
 		for x=1 to length(dir_list) do
 			prog_list[2][t] = append(prog_list[2][t],dir_list[x][D_NAME])
 		end for
@@ -43,14 +48,14 @@ public procedure load_programs()
 PROGRAMS = repeat({},length( CONTESTANTS[1] ))
 	for t=1 to length(CONTESTANTS[1]) do
 		for x=1 to length(CONTESTANTS[2][t]) do
-			PROGRAMS[t] = append(PROGRAMS[t],read_file( CONTEST_DIR & "\\entries\\" & CONTESTANTS[1][t] & "\\" & CONTESTANTS[2][t][x] ) )
+			PROGRAMS[t] = append(PROGRAMS[t],read_file( CONTEST_DIR & ENTRIES & CONTESTANTS[1][t] & SLASH & CONTESTANTS[2][t][x] ) )
 		end for
 	end for
 end procedure
 
 procedure load_checker()
 atom fn
-	fn = open(CONTEST_DIR & "\\results\\checker.txt","r")
+	fn = open(CONTEST_DIR & RESULTS & "checker.txt","r")
 	if fn > 0 then
 		CHECKER = get(fn)
 		close(fn)
@@ -61,9 +66,9 @@ atom fn
 end procedure
 
 public procedure clear_results()
-	delete_file( CONTEST_DIR & "\\results\\checker.txt" )
-	delete_file( CONTEST_DIR & "\\results\\tokens.txt" )
-	delete_file( CONTEST_DIR & "\\results\\filesize.txt" )
+	delete_file( CONTEST_DIR & RESULTS & "checker.txt" )
+	delete_file( CONTEST_DIR & RESULTS & "tokens.txt" )
+	delete_file( CONTEST_DIR & RESULTS & "filesize.txt" )
 end procedure
 
 public function has_changed()
@@ -72,12 +77,12 @@ atom fn
 	load_programs()
 	load_checker()
 
-	if atom(dir(CONTEST_DIR & "\\results\\")) then
-		create_directory(CONTEST_DIR & "\\results\\")
+	if atom(dir(CONTEST_DIR & RESULTS)) then
+		create_directory(CONTEST_DIR & RESULTS)
 	end if
 		
 	if integer(CHECKER) then
-		fn = open(CONTEST_DIR & "\\results\\checker.txt","w")
+		fn = open(CONTEST_DIR & RESULTS & "checker.txt","w")
 		print(fn,PROGRAMS)
 		close(fn)
 	elsif not equal(PROGRAMS,CHECKER) then
@@ -102,14 +107,14 @@ integer fn
 	
 	for t=1 to length( CONTESTANTS[1] ) do
 		for x=1 to length( CONTESTANTS[2][t] ) do
-			prog = CONTEST_DIR & "\\entries\\" & CONTESTANTS[1][t] & "\\" & CONTESTANTS[2][t][x]
+			prog = CONTEST_DIR & ENTRIES & CONTESTANTS[1][t] & SLASH  & CONTESTANTS[2][t][x]
 			puts(1,"\nParsing " & prog)
 			token_count = tokenize_file( prog )
 			results[TOKENS][t] &= length(token_count[1])
 		end for
 	end for
 	
-	fn = open(CONTEST_DIR & "\\results\\tokens.txt","w")
+	fn = open(CONTEST_DIR & RESULTS & "tokens.txt","w")
 	print(fn,results[TOKENS])
 	close(fn)
 end procedure
@@ -126,7 +131,7 @@ integer fn, c
 	
 	for t=1 to length( CONTESTANTS[1] ) do
 		for x=1 to length( CONTESTANTS[2][t] ) do
-			prog = CONTEST_DIR & "\\entries\\" & CONTESTANTS[1][t] & "\\" & CONTESTANTS[2][t][x]
+			prog = CONTEST_DIR & ENTRIES & CONTESTANTS[1][t] & SLASH & CONTESTANTS[2][t][x]
 			TEMP = read_lines(prog)
 			c = 0
 			for y=1 to length(TEMP) do
@@ -138,7 +143,7 @@ integer fn, c
 		end for
 	end for
 	
-	fn = open(CONTEST_DIR & "\\results\\loc.txt","w")
+	fn = open(CONTEST_DIR & RESULTS & "loc.txt","w")
 	print(fn,results[LOC])
 	close(fn)
 end procedure
@@ -155,13 +160,13 @@ integer fn, c
 	
 	for t=1 to length( CONTESTANTS[1] ) do
 		for x=1 to length( CONTESTANTS[2][t] ) do
-			prog = CONTEST_DIR & "\\entries\\" & CONTESTANTS[1][t] & "\\" & CONTESTANTS[2][t][x]
+			prog = CONTEST_DIR & ENTRIES & CONTESTANTS[1][t] & SLASH & CONTESTANTS[2][t][x]
 			TEMP = dir( prog )
 			results[FILESIZE][t] &= TEMP[1][D_SIZE]
 		end for
 	end for
 	
-	fn = open(CONTEST_DIR & "\\results\\filesize.txt","w")
+	fn = open(CONTEST_DIR & RESULTS & "filesize.txt","w")
 	print(fn,results[FILESIZE])
 	close(fn)
 end procedure
@@ -170,7 +175,7 @@ public procedure display_token_results()
 sequence TEMP
 integer fn
 
-	fn = open(CONTEST_DIR & "\\results\\tokens.txt","r")
+	fn = open(CONTEST_DIR & RESULTS & "tokens.txt","r")
 	TEMP = get(fn)
 	close(fn)
 	results[TOKENS] = TEMP[2]
@@ -192,7 +197,7 @@ public procedure display_loc_results()
 sequence TEMP
 integer fn
 
-	fn = open(CONTEST_DIR & "\\results\\loc.txt","r")
+	fn = open(CONTEST_DIR & RESULTS & "loc.txt","r")
 	TEMP = get(fn)
 	close(fn)
 	results[LOC] = TEMP[2]
@@ -214,7 +219,7 @@ public procedure display_filesize_results()
 sequence TEMP
 integer fn
 
-	fn = open(CONTEST_DIR & "\\results\\filesize.txt","r")
+	fn = open(CONTEST_DIR & RESULTS & "filesize.txt","r")
 	TEMP = get(fn)
 	close(fn)
 	results[FILESIZE] = TEMP[2]
