@@ -37,3 +37,24 @@
 010
 ?1  - Should not occur
 ?0  - 7
+209 - Test register 0 gets set correctly
+?0  - 9
+218 - Test register 0 gets set correctly
+?1  - 8
+227 - Test register 0 gets set correctly
+?2  - 7
+236 - Test register 0 gets set correctly
+?3  - 6
+245 - Test register 0 gets set correctly
+?4  - 5
+254 - Test register 0 gets set correctly
+?5  - 4
+263 - Test register 0 gets set correctly
+?6  - 3
+272 - Test register 0 gets set correctly
+?7  - 2
+281 - Test register 0 gets set correctly
+?8  - 1
+292 - Test register 0 gets set correctly
+?9  - 2
+100 - halt
