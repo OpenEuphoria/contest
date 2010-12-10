@@ -127,6 +127,16 @@ procedure load_label_loc(sequence operands)
 	machcode &= sprintf("%d", labloc)
 end procedure
 
+function label_name( integer pc )
+	sequence pairs = map:pairs( labels )
+	for i = 1 to length( pairs ) do
+		if pairs[i][2] = pc then
+			return "\tlabel: " & pairs[i][1]
+		end if
+	end for
+	return ""
+end function
+
 j = 1
 while j <= length(progtext) do
 	sequence oper
@@ -361,7 +371,7 @@ while j <= length(progtext) do
 			abort(1)
 	end switch
 	
-	machcode &= sprintf("\t\t; %s\t%s\n", {oper, progtext[j]})
+	machcode &= sprintf("\t\t; %s\t%s%s\n", {oper, progtext[j], label_name( j ) })
 	j += 1
 end while
 
