@@ -77,13 +77,14 @@ while j <= length(progtext) do
 	end if
 end while
 
+
 -- calculate the number of bits for label fixups
 integer 
 	fixup_bits_needed  = floor( 2 + log( j ) / log( 2 ) ),
-	fixup_instr_needed = fixup_bits_needed * 2
+	fixup_instr_needed = (1+fixup_bits_needed) * 2
 
 sequence fixup_string = "2[1]0\n2[2]1\n"
-for i = 1 to fixup_bits_needed do
+for i = 0 to fixup_bits_needed do
 	if i < fixup_bits_needed then
 		fixup_string &= "3[1]0\n6[2][2]\n"
 	else
@@ -431,7 +432,7 @@ procedure do_label_fixups()
 		fixup_epilog &= sprintf("fixup: label %s at %d\n", { label_name, loc } )
 		integer bit = 0
 		integer sum = 0
-		while bit < fixup_bits_needed do
+		while bit <= fixup_bits_needed do
 			if and_bits( loc, power( 2, bit ) ) then
 				machcode[strpos] = '6'
 				machcode[strpos+2] = helper
@@ -448,5 +449,6 @@ do_label_fixups()
 
 puts(1, machcode)
 puts(1, "100\n" )
+printf(1, "Code size: %d\n,Label Bits: %d (%d)\n", { length( progtext ), fixup_bits_needed, power( 2, fixup_bits_needed )})
 puts(1, fixup_epilog )
 display (map:pairs(labels))
