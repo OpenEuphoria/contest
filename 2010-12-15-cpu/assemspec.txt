@@ -13,31 +13,32 @@ The CPU consists of three types of storage.
 
 == Instruction Set ==
 
-|= Instruction |= Operand(s) |= Machine Instruction(s) |= Description                                   
-|   halt       | (none)      | 100 | Stops execution
-|   set        | Rn, i       | 2ni | Copies a literal value 'i' to register 'n'
-|   set        | Rn, label   | 2ni [3ni...] | Copies a location of 'label' to register 'n'
-|   set        | Rn, Rm      | 5nm | Copies register 'm' to register 'n'
-|   set        | Rn, [Rm]    | 8nm | Copies the RAM value whose address is in \\
+|= Instruction |= Operand(s)   |= Machine Instruction(s) |= Description                                   
+|   halt       | (none)        | 100 | Stops execution
+|   set        | Rn, i         | 2ni | Copies a literal value 'i' to register 'n'
+|   set        | Rn, label, Rm | 2ni [3ni...] | Copies a location of 'label' to register 'n'
+                                      using register 'm' as a helper
+|   set        | Rn, Rm        | 5nm | Copies register 'm' to register 'n'
+|   set        | Rn, [Rm]      | 8nm | Copies the RAM value whose address is in \\
                                       register 'm' to register 'n'       
-|   set        | [Rm], Rn    | 9nm | Copies the value in register 'n' to the \\
-                                      RAM location whose address is in register 'm'
-|   add        | Rn, i       | 3ni | Adds the literal value 'i' to register 'n'
-|   add        | Rn, Rm      | 6nm | Adds register 'm' to register 'n'
-|   mul        | Rn, i       | 4ni | Multiply register 'n' by the literal value 'i'
-|   mul        | Rn, Rm      | 7nm | Multiply register 'n' by register 'm'
-|   jmpz       | Rn, Rm      | 0nm | Set the intruction pointer to the value \\
-                                      in register 'n' if register 'm' is not zero. 
-|   outl       | Rn          | ?n  | Send to the console, the text representation of \\
-                                      the value in register 'n' followed by a newline
-|   outs       | Rn          | ??n | Send to the console, the text representation of \\
-                                      the value in register 'n' followed by a space
-|   nop        | (none)      | 300 | Does nothing
+|   set        | [Rm], Rn      | 9nm | Copies the value in register 'n' to the \\
+                                       RAM location whose address is in register 'm'
+|   add        | Rn, i         | 3ni | Adds the literal value 'i' to register 'n'
+|   add        | Rn, Rm        | 6nm | Adds register 'm' to register 'n'
+|   mul        | Rn, i         | 4ni | Multiply register 'n' by the literal value 'i'
+|   mul        | Rn, Rm        | 7nm | Multiply register 'n' by register 'm'
+|   jmpz       | Rn, Rm        | 0nm | Set the intruction pointer to the value \\
+                                       in register 'n' if register 'm' is not zero. 
+|   outl       | Rn            | ?n  | Send to the console, the text representation of \\
+                                       the value in register 'n' followed by a newline
+|   outs       | Rn            | ??n | Send to the console, the text representation of \\
+                                       the value in register 'n' followed by a space
+|   nop        | (none)        | 300 | Does nothing
 
 == Example ==
 {{{
 ; Fibonacci series
- set R3, print  ; Get location of loop start
+ set R3, print, R0 ; Get location of loop start
  
  ; Get -1 into R8
  set R8, 0
