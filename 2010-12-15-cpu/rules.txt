@@ -1,6 +1,6 @@
 4.0.0 RC has been released, it's time for another mini-contest! I want to be
-right up front, however, that 4.0 use is not required. You can enter the contest
-using 3.x.
+right up front, however, that 4.0 use is not required. You can enter the
+contest using 3.x.
 
 This contest will be a bit more involved but still pretty easy. This time,
 however, scoring will be a little bit different. 100 possible points for all
@@ -30,8 +30,10 @@ exception of the print instructions. The encoding is as follows:
 | ?d  | print the value of register ##d## with a trailing newline
 | ??d | print the value of register ##d## with a trailing space
 
-All registers initially contain ##000##. Anything after the 3 digit instruction
-is a comment.
+All registers initially contain ##000##. All ram addresses initially contain
+##0## **except** for ram address ##0## which should contain ##-1## making it
+easy to provide looping structures. Anything after the 3 digit instruction is a
+comment.
 
 An example program:
 
@@ -50,8 +52,8 @@ $ eui cpu.ex prog1.txt
 
 Let's do this a bit differently. Please state here on this message if you are
 going to participate. That will make things more interesting. As with the last
-contest, the contest can be discussed here but code and algorithms should not be
-discussed in any detail.
+contest, the contest can be discussed here but code and algorithms should not
+be discussed in any detail.
 
 **Deadline is 1 week, i.e. 7PM EST December 15th 2010.** Please do not send me
 submissions before Monday. I would like to work on my own solution w/o being
@@ -60,10 +62,8 @@ Monday, please send submissions to jeremy A.T. cowgar dot com.
 
 **Updates**
 
-* Ram is 1,000 bytes long and should store a Euphoria integer
-* Ram, registers and goto are all 0 based index
-* Ram address 0 should be initialized in Euphoria to -1. This will enable much easier looping 
-  structures and the ability to subtract.
+* Ram is 1,000 bytes long, address ##0## should be initialized to -1 for ease of looping structions and all other addresses should be initialized to ##0##. Ram should store a Euphoria integer
+* Ram, registers and goto are all ##0## based index
 * There is no requirement to handle invalid instructions, registers or ram addresses, it's OK
   to let the program crash
 * ??d should print a trailing space
@@ -71,8 +71,8 @@ Monday, please send submissions to jeremy A.T. cowgar dot com.
 **Sample test cases**
 
 Sample test cases are located on our contest SCM server at
-[[hg:contest/file/default/2010-12-15-cpu]]. See the ##.cpu## and ##.out## files.
-Example testing
+[[hg:contest/file/default/2010-12-15-cpu]]. See the ##.cpu## and ##.out##
+files. Example testing
 
 {{{
 % eui myapp.ex basics.cpu > basics.mine
@@ -86,3 +86,4 @@ not functioning as expected.
 
 Submissions will be added to our [[hg:contest]] repository. To count your
 tokens, you may use the token_count program found there.
+
