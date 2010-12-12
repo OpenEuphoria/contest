@@ -150,7 +150,7 @@ end procedure
 function label_name( integer pc )
 	sequence pairs = map:pairs( labels )
 	for i = 1 to length( pairs ) do
-		if pairs[i][2] = pc then
+		if pairs[i][2] = pc-1 then
 			return "\tlabel: " & pairs[i][1]
 		end if
 	end for
