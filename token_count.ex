@@ -39,6 +39,9 @@ for i = 1 to length(cmds) do
 	
 	sequence tokens = tokenize:tokenize_file(fname)
 	stats &= { { fname, length(tokens[1]) } }
+	ifdef DEBUG then
+		show_tokens( open( fname & ".token", "w", 1 ), tokens[1] )
+	end ifdef
 end for
 
 integer
