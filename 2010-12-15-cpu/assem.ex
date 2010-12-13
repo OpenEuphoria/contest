@@ -299,6 +299,12 @@ while j <= length(progtext) do
 				if not find(operands[3][1], RegStart) then
 					bad_code("expecting a Register in third operand", oper, progtext[j])
 				end if
+				
+				if equal( operands[1], operands[3] ) then
+					bad_code("cannot use the same register as a helper for fetching a label address",
+						oper, progtext[j] )
+				end if
+				
 				adjust_label_locs( fixup_instr_needed, j )
 				label_fixups = append( label_fixups, { length( machcode ) + 1, operands[2], operands[3][2] } )
 				machcode &= text:format( fixup_string, { {operands[1][2]}, {operands[3][2]}})
