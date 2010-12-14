@@ -57,4 +57,17 @@
 ?8  - 1
 292 - Test register 0 gets set correctly
 ?9  - 2
+209 - Test that RAM address 1000 can be set
+302 -        (9+2=11)
+409 -        (11*9=99)
+215 -
+412 -        (5*2=10)
+701 -        (10*99=990)
+309 -        (990+9=999)
+?0  -        Show that we are indeed at 999
+218 -        Set register 1 to 8, that's what we will put into RAM
+910 -        Set RAM 1,000 to value in register 1
+223 -        r2=3 just to make sure we copy 8 from ram
+820 -        r2=ram[r0]
+?2  -    Did we get 8?
 100 - halt
