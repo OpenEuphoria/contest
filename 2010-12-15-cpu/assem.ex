@@ -455,6 +455,8 @@ do_label_fixups()
 
 puts(1, machcode)
 puts(1, "100\n" )
-printf(1, "Code size: %d\n,Label Bits: %d (%d)\n", { length( progtext ), fixup_bits_needed, power( 2, fixup_bits_needed )})
-puts(1, fixup_epilog )
-display (map:pairs(labels))
+ifdef DEBUG then
+	printf(1, "Code size: %d\n,Label Bits: %d (%d)\n", { length( progtext ), fixup_bits_needed, power( 2, fixup_bits_needed )})
+	puts(1, fixup_epilog )
+	display (map:pairs(labels))
+end ifdef
