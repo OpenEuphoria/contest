@@ -63,7 +63,7 @@
 	outl R1
 
 	; Goto on zero does not jump
-	set R0, zero_jumps_bad
+	set R0, zero_jumps_bad, R7
 	set R1, 0
 	jmpz R0, R1
 
@@ -74,7 +74,7 @@ zero_didnt_jump_good:
 	outl R0
 
 	; Goto on one does jump
-	set R0, one_jumps
+	set R0, one_jumps, R7
 	set R1, 1
 	jmpz R0, R1
 

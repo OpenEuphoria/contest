@@ -1,73 +1,138 @@
-201 - Test to make sure the set instruction works
-?0  - 1
-201 - Test to make sure the add instruction works
-304
-?0  - 5
-202 - Test to make sure the multiply instruction works
-409
-?0  - 18
-202 - Test to make sure adding two registers together works
-212
-601
-?0  - 4
-202 - Test to make sure multiplying two registers together works
-216
-701
-?0  - 12
-205 - Test to make sure setting and getting RAM works
-211
-901
-821
-?2  - 5
-200 - Test to make sure RAM address 0 is -1
-800
-?0  - -1
-201 - Test that ?? prints "#SPACE"
-212
-??0 - "1 "
-??1 - "2 "  ... end result "1 2 " on one line
-200 - Test that goto on 0 does not jump
-211 - Caution, will be endless loop if test fails
-010
-?1  - 1
-207 - Test that goto on 1 does jump
-215
-417 - 35
-313 - 38
-010
-?1  - Should not occur
-?0  - 7
-209 - Test register 0 gets set correctly
-?0  - 9
-218 - Test register 0 gets set correctly
-?1  - 8
-227 - Test register 0 gets set correctly
-?2  - 7
-236 - Test register 0 gets set correctly
-?3  - 6
-245 - Test register 0 gets set correctly
-?4  - 5
-254 - Test register 0 gets set correctly
-?5  - 4
-263 - Test register 0 gets set correctly
-?6  - 3
-272 - Test register 0 gets set correctly
-?7  - 2
-281 - Test register 0 gets set correctly
-?8  - 1
-292 - Test register 0 gets set correctly
-?9  - 2
-209 - Test that RAM address 1000 can be set
-302 -        (9+2=11)
-409 -        (11*9=99)
-215 -
-412 -        (5*2=10)
-701 -        (10*99=990)
-309 -        (990+9=999)
-?0  -        Show that we are indeed at 999
-218 -        Set register 1 to 8, that's what we will put into RAM
-910 -        Set RAM 1,000 to value in register 1
-223 -        r2=3 just to make sure we copy 8 from ram
-820 -        r2=ram[r0]
-?2  -    Did we get 8?
-100 - halt
+209		; set	R0, 9		
+?0		; outl	R0		
+218		; set	R1, 8		
+?1		; outl	R1		
+227		; set	R2, 7		
+?2		; outl	R2		
+236		; set	R3, 6		
+?3		; outl	R3		
+245		; set	R4, 5		
+?4		; outl	R4		
+254		; set	R5, 4		
+?5		; outl	R5		
+263		; set	R6, 3		
+?6		; outl	R6		
+272		; set	R7, 2		
+?7		; outl	R7		
+281		; set	R8, 1		
+?8		; outl	R8		
+292		; set	R9, 2		
+?9		; outl	R9		
+201		; set	R0, 1		
+304		; add	R0, 4		
+?0		; outl	R0		
+202		; set	R0, 2		
+409		; mul	R0, 9		
+?0		; outl	R0		
+202		; set	R0, 2		
+212		; set	R1, 2		
+601		; add	R0, R1		
+?0		; outl	R0		
+202		; set	R0, 2		
+216		; set	R1, 6		
+701		; mul	R0, R1		
+?0		; outl	R0		
+205		; set	R0, 5		
+211		; set	R1, 1		
+910		; set	[R0], R1		
+821		; set	R2, [R1]		
+?2		; outl	R2		
+200		; set	R0, 0		
+810		; set	R1, [R0]		
+?1		; outl	R1		
+201		; set	R0, 1		
+212		; set	R1, 2		
+??0		; outs	R0		
+?1		; outl	R1		
+200
+271
+300
+677
+607
+677
+607
+677
+300
+677
+300
+677
+607
+677
+607
+677
+300
+677
+300		; set	R0, zero_jumps_bad, R7		
+210		; set	R1, 0		
+001		; jmpz	R0, R1		
+203		; set	R0, 3	label: zero_didnt_jump_good		
+??0		; outs	R0		
+??0		; outs	R0		
+?0		; outl	R0		
+200
+271
+607
+677
+300
+677
+300
+677
+300
+677
+300
+677
+607
+677
+607
+677
+300
+677
+300		; set	R0, one_jumps, R7		
+211		; set	R1, 1		
+001		; jmpz	R0, R1		
+298		; set	R9, 8	label: one_didnt_jump_bad		
+??9		; outs	R9		
+??9		; outs	R9		
+?9		; outl	R9		
+100		; halt			
+203		; set	R0, 3	label: one_jumps		
+??0		; outs	R0		
+??0		; outs	R0		
+?0		; outl	R0		
+100		; halt			
+299		; set	R9, 9	label: zero_jumps_bad		
+?9		; outl	R9		
+?9		; outl	R9		
+?9		; outl	R9		
+100		; halt			
+100
+Code size: 107
+,Label Bits: 8 (256)
+fixup: label zero_jumps_bad at 102
+	add 2 -> 2
+	add 4 -> 6
+	add 32 -> 38
+	add 64 -> 102
+fixup: label one_jumps at 97
+	add 1 -> 1
+	add 32 -> 33
+	add 64 -> 97
+{
+  {
+    "zero_didnt_jump_good",
+    67
+  },
+  {
+    "one_didnt_jump_bad",
+    92
+  },
+  {
+    "one_jumps",
+    97
+  },
+  {
+    "zero_jumps_bad",
+    102
+  }
+}
+

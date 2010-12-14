@@ -1,0 +1,816 @@
+200
+211
+300
+611
+601
+611
+300
+611
+300
+611
+601
+611
+601
+611
+601
+611
+601
+611
+601
+611
+300		; set	r0, init-stack, r1		
+290
+211
+691
+611
+691
+611
+390
+611
+691
+611
+390
+611
+691
+611
+390
+611
+390
+611
+390
+611
+390		; set	r9, done-init-stack, r1		
+000		; jmpz	r0, r0		
+285		; set	r8, 5	label: done-init-stack		
+489		; mul	r8, 9		
+487		; mul	r8, 7		
+485		; mul	r8, 5		
+486		; mul	r8, 6		
+485		; mul	r8, 5		
+279		; set	r7, 9		
+476		; mul	r7, 6		
+475		; mul	r7, 5		
+477		; mul	r7, 7		
+477		; mul	r7, 7		
+473		; mul	r7, 3		
+??8		; outs	r8		; print a
+??7		; outs	r7		; print b
+260
+211
+360
+611
+661
+611
+661
+611
+661
+611
+661
+611
+661
+611
+661
+611
+661
+611
+661
+611
+360		; set	r6, push-stack, r1		; push b onto the stack
+290
+211
+691
+611
+390
+611
+691
+611
+390
+611
+390
+611
+691
+611
+691
+611
+390
+611
+390
+611
+390		; set	r9, pushed-b, r1		
+507		; set	r0, r7		
+066		; jmpz	r6, r6		; push b
+230
+251
+635
+655
+635
+655
+635
+655
+330
+655
+635
+655
+330
+655
+635
+655
+635
+655
+330
+655
+330		; set	r3, division-subroutine, r5		
+290
+251
+390
+655
+695
+655
+390
+655
+390
+655
+695
+655
+390
+655
+390
+655
+695
+655
+390
+655
+390		; set	r9, store-division-result, r5		
+508		; set	r0, r8		; r0 = dividend
+517		; set	r1, r7		; r1 = divisor
+033		; jmpz	r3, r3		; do the division
+571		; set	r7, r1	label: store-division-result		; r7 = remainder
+220
+231
+623
+633
+623
+633
+623
+633
+623
+633
+320
+633
+320
+633
+320
+633
+320
+633
+320
+633
+623		; set	r2, pop-stack, r3		
+290
+231
+390
+633
+693
+633
+693
+633
+693
+633
+693
+633
+693
+633
+390
+633
+693
+633
+390
+633
+390		; set	r9, popped-previous-remainder, r3		
+022		; jmpz	r2, r2		; puts the previous remainder in r0
+580		; set	r8, r0	label: popped-previous-remainder		; put the last remainder into r8
+230
+241
+634
+644
+330
+644
+330
+644
+634
+644
+634
+644
+634
+644
+330
+644
+330
+644
+330
+644
+330		; set	r3, push-b, r4		
+037		; jmpz	r3, r7		; jump to push-b, unless we're finished
+?8		; outl	r8		; print the result!
+100		; halt			; all done!
+280		; set	r8, 0	label: division-subroutine		; quotient
+570		; set	r7, r0		; remainder
+561		; set	r6, r1		; divisor
+509		; set	r0, r9		
+290
+211
+390
+611
+691
+611
+691
+611
+390
+611
+390
+611
+390
+611
+390
+611
+390
+611
+691
+611
+390		; set	r9, do-division, r1		
+210
+221
+310
+622
+612
+622
+612
+622
+612
+622
+612
+622
+612
+622
+612
+622
+612
+622
+612
+622
+310		; set	r1, push-stack, r2		
+011		; jmpz	r1, r1		; push the return addr onto the stack
+220		; set	r2, 0	label: do-division		
+822		; set	r2, [r2]		
+762		; mul	r6, r2		; we'll subtract the divisor each time through the loop
+290
+241
+390
+644
+390
+644
+694
+644
+694
+644
+694
+644
+390
+644
+694
+644
+694
+644
+694
+644
+390		; set	r9, division-loop-back, r4		
+230
+241
+330
+644
+330
+644
+330
+644
+330
+644
+330
+644
+634
+644
+330
+644
+330
+644
+330
+644
+634		; set	r3, less-than-subroutine, r4		
+507		; set	r0, r7		; r0 = remainder
+516		; set	r1, r6		; r1 = -divisor
+220		; set	r2, 0		
+822		; set	r2, [r2]		
+712		; mul	r1, r2		
+033		; jmpz	r3, r3		; see if we even have anything to do...
+381		; add	r8, 1	label: division-subtract-loop		; quotient  += 1
+676		; add	r7, r6		; remainder -= divisor
+517		; set	r1, r7		; r1 = remainder
+506		; set	r0, r6		; r0 = -divisor
+220		; set	r2, 0		
+822		; set	r2, [r2]		
+702		; mul	r0, r2		; r6 = -divisor, so we multiply by -1
+230
+241
+330
+644
+330
+644
+634
+644
+634
+644
+330
+644
+634
+644
+634
+644
+330
+644
+634
+644
+330		; set	r3, division-check-less, r4		
+031		; jmpz	r3, r1		
+230
+241
+634
+644
+330
+644
+634
+644
+634
+644
+330
+644
+634
+644
+330
+644
+634
+644
+634
+644
+330		; set	r3, division-done, r4		
+033		; jmpz	r3, r3		; zero remainder
+230
+241
+330
+644
+330
+644
+330
+644
+330
+644
+330
+644
+634
+644
+330
+644
+330
+644
+330
+644
+634		; set	r3, less-than-subroutine, r4		; check if divisor < remainder
+290
+241
+694
+644
+694
+644
+694
+644
+390
+644
+694
+644
+390
+644
+390
+644
+694
+644
+694
+644
+390		; set	r9, division-check-remainder, r4		
+033		; jmpz	r3, r3		
+230
+241
+330
+644
+330
+644
+634
+644
+634
+644
+634
+644
+330
+644
+634
+644
+634
+644
+634
+644
+330		; set	r3, division-loop-back, r4		; use the result of less-than
+030		; jmpz	r3, r0		; test for end of division conditions
+220
+231
+623
+633
+623
+633
+623
+633
+623
+633
+320
+633
+320
+633
+320
+633
+320
+633
+320
+633
+623		; set	r2, pop-stack, r3		; pop the return addr off the stack
+290
+231
+390
+633
+390
+633
+390
+633
+693
+633
+693
+633
+390
+633
+693
+633
+693
+633
+693
+633
+390		; set	r9, division-return, r3		
+022		; jmpz	r2, r2		; call pop-stack
+590		; set	r9, r0	label: division-return		
+508		; set	r0, r8		; quotient into r0
+517		; set	r1, r7		; remainder into r1
+099		; jmpz	r9, r9		
+230
+241
+634
+644
+330
+644
+330
+644
+634
+644
+634
+644
+634
+644
+330
+644
+330
+644
+634
+644
+330		; set	r3, division-subtract-loop, r4		
+033		; jmpz	r3, r3		
+209		; set	r0, 9	label: init-stack		; set up r0 = 999
+405		; mul	r0, 5		
+402		; mul	r0, 2		
+219		; set	r1, 9		
+601		; add	r0, r1		
+415		; mul	r1, 5		
+414		; mul	r1, 4		
+415		; mul	r1, 5		
+601		; add	r0, r1		; r0 = 999
+510		; set	r1, r0		
+910		; set	[r0], r1		; stack pointer at ram.999, points to 999
+099		; jmpz	r9, r9		
+530		; set	r3, r0	label: push-stack		; remember the new value in r3
+209		; set	r0, 9		; set up r0 = 999
+405		; mul	r0, 5		
+402		; mul	r0, 2		
+219		; set	r1, 9		
+601		; add	r0, r1		
+415		; mul	r1, 5		
+414		; mul	r1, 4		
+415		; mul	r1, 5		
+601		; add	r0, r1		; r0 = 999
+810		; set	r1, [r0]		; get the stack pointer into r1
+220		; set	r2, 0		
+822		; set	r2, [r2]		
+612		; add	r1, r2		
+910		; set	[r0], r1		
+931		; set	[r1], r3		
+099		; jmpz	r9, r9		; return from push-stack
+209		; set	r0, 9	label: pop-stack		; set up r0 = 999
+405		; mul	r0, 5		
+402		; mul	r0, 2		
+219		; set	r1, 9		
+601		; add	r0, r1		
+415		; mul	r1, 5		
+414		; mul	r1, 4		
+415		; mul	r1, 5		
+601		; add	r0, r1		; r0 = 999
+810		; set	r1, [r0]		
+821		; set	r2, [r1]		; get the value
+230		; set	r3, 0		
+931		; set	[r1], r3		
+311		; add	r1, 1		
+910		; set	[r0], r1		
+502		; set	r0, r2		
+099		; jmpz	r9, r9		; return from pop-stack
+220		; set	r2, 0	label: less-than-subroutine		
+822		; set	r2, [r2]		
+702		; mul	r0, r2		
+712		; mul	r1, r2		
+230
+251
+330
+655
+635
+655
+635
+655
+635
+655
+330
+655
+330
+655
+635
+655
+330
+655
+330
+655
+635		; set	r3,less-than-loop, r5		
+240
+251
+340
+655
+645
+655
+340
+655
+340
+655
+645
+655
+340
+655
+645
+655
+340
+655
+340
+655
+645		; set	r4, less-than-might-be-true, r5		
+311		; add	r1, 1	label: less-than-loop		
+041		; jmpz	r4, r1		; not there yet...
+200		; set	r0, 0		
+099		; jmpz	r9, r9		; not less than!
+301		; add	r0, 1	label: less-than-might-be-true		
+030		; jmpz	r3, r0		; not there yet...
+201		; set	r0, 1		
+099		; jmpz	r9, r9		; end of less than
+100
+Code size: 598
+,Label Bits: 9 (512)
+fixup: label init-stack at 498
+	add 2 -> 2
+	add 16 -> 18
+	add 32 -> 50
+	add 64 -> 114
+	add 128 -> 242
+	add 256 -> 498
+fixup: label done-init-stack at 43
+	add 1 -> 1
+	add 2 -> 3
+	add 8 -> 11
+	add 32 -> 43
+fixup: label push-stack at 510
+	add 2 -> 2
+	add 4 -> 6
+	add 8 -> 14
+	add 16 -> 30
+	add 32 -> 62
+	add 64 -> 126
+	add 128 -> 254
+	add 256 -> 510
+fixup: label pushed-b at 101
+	add 1 -> 1
+	add 4 -> 5
+	add 32 -> 37
+	add 64 -> 101
+fixup: label division-subroutine at 215
+	add 1 -> 1
+	add 2 -> 3
+	add 4 -> 7
+	add 16 -> 23
+	add 64 -> 87
+	add 128 -> 215
+fixup: label store-division-result at 146
+	add 2 -> 2
+	add 16 -> 18
+	add 128 -> 146
+fixup: label pop-stack at 527
+	add 1 -> 1
+	add 2 -> 3
+	add 4 -> 7
+	add 8 -> 15
+	add 512 -> 527
+fixup: label popped-previous-remainder at 190
+	add 2 -> 2
+	add 4 -> 6
+	add 8 -> 14
+	add 16 -> 30
+	add 32 -> 62
+	add 128 -> 190
+fixup: label push-b at 57
+	add 1 -> 1
+	add 8 -> 9
+	add 16 -> 25
+	add 32 -> 57
+fixup: label do-division at 262
+	add 2 -> 2
+	add 4 -> 6
+	add 256 -> 262
+fixup: label push-stack at 510
+	add 2 -> 2
+	add 4 -> 6
+	add 8 -> 14
+	add 16 -> 30
+	add 32 -> 62
+	add 64 -> 126
+	add 128 -> 254
+	add 256 -> 510
+fixup: label division-loop-back at 476
+	add 4 -> 4
+	add 8 -> 12
+	add 16 -> 28
+	add 64 -> 92
+	add 128 -> 220
+	add 256 -> 476
+fixup: label less-than-subroutine at 544
+	add 32 -> 32
+	add 512 -> 544
+fixup: label division-check-less at 364
+	add 4 -> 4
+	add 8 -> 12
+	add 32 -> 44
+	add 64 -> 108
+	add 256 -> 364
+fixup: label division-done at 429
+	add 1 -> 1
+	add 4 -> 5
+	add 8 -> 13
+	add 32 -> 45
+	add 128 -> 173
+	add 256 -> 429
+fixup: label less-than-subroutine at 544
+	add 32 -> 32
+	add 512 -> 544
+fixup: label division-check-remainder at 407
+	add 1 -> 1
+	add 2 -> 3
+	add 4 -> 7
+	add 16 -> 23
+	add 128 -> 151
+	add 256 -> 407
+fixup: label division-loop-back at 476
+	add 4 -> 4
+	add 8 -> 12
+	add 16 -> 28
+	add 64 -> 92
+	add 128 -> 220
+	add 256 -> 476
+fixup: label pop-stack at 527
+	add 1 -> 1
+	add 2 -> 3
+	add 4 -> 7
+	add 8 -> 15
+	add 512 -> 527
+fixup: label division-return at 472
+	add 8 -> 8
+	add 16 -> 24
+	add 64 -> 88
+	add 128 -> 216
+	add 256 -> 472
+fixup: label division-subtract-loop at 313
+	add 1 -> 1
+	add 8 -> 9
+	add 16 -> 25
+	add 32 -> 57
+	add 256 -> 313
+fixup: label less-than-loop at 590
+	add 2 -> 2
+	add 4 -> 6
+	add 8 -> 14
+	add 64 -> 78
+	add 512 -> 590
+fixup: label less-than-might-be-true at 594
+	add 2 -> 2
+	add 16 -> 18
+	add 64 -> 82
+	add 512 -> 594
+{
+  {
+    "division-done",
+    429
+  },
+  {
+    "less-than-loop",
+    590
+  },
+  {
+    "do-division",
+    262
+  },
+  {
+    "division-subroutine",
+    215
+  },
+  {
+    "division-loop-back",
+    476
+  },
+  {
+    "init-stack",
+    498
+  },
+  {
+    "less-than-subroutine",
+    544
+  },
+  {
+    "division-check-remainder",
+    407
+  },
+  {
+    "division-check-less",
+    364
+  },
+  {
+    "store-division-result",
+    146
+  },
+  {
+    "push-b",
+    57
+  },
+  {
+    "popped-previous-remainder",
+    190
+  },
+  {
+    "push-stack",
+    510
+  },
+  {
+    "less-than-might-be-true",
+    594
+  },
+  {
+    "division-subtract-loop",
+    313
+  },
+  {
+    "pushed-b",
+    101
+  },
+  {
+    "pop-stack",
+    527
+  },
+  {
+    "done-init-stack",
+    43
+  },
+  {
+    "division-return",
+    472
+  }
+}

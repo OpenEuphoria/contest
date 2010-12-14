@@ -1,0 +1,321 @@
+; cellular automaton
+; ram.0 -1
+; ram.1 rule counter
+; ram.2 width
+; ram.3 
+; ram.4 max generation
+; ram.5 generation counter
+; ram.6 writing row number
+; ram.7 reading row number
+; ram.8 row 1 pointer
+; ram.9 row 2 pointer 
+; ram.10
+; ram.11 writing pointer
+; ram.12 reading pointer
+; ram.256 rules
+
+set r0, 2     ; ram location for the width: ram.2
+set r1, 5
+mul r1, 6     ; set the width to be 30
+set [r0], r1  ; store the width
+
+; set up the first row
+set r1, 5
+mul r1, 4
+set r0, 8
+set [r0], r1  ; pointer to row 1 in ram.8
+
+add r1, 9
+add r1, 9
+set r2, 1
+set [r1], r2  ; set a cell to get things going
+
+
+; set up the second row
+add r1, 2     ; rows have a one element padding
+set r2, 2
+set r2, [r2]  ; load the width into r2
+add r1, r2
+add r0, 1
+set [r0], r1  ; store pointer to row 2 in ram.9
+
+add r1, 9
+add r1, 9
+set r2, 1
+set [r1], r2  ; set a cell to get things going
+
+set r0, 4
+set r1, 5
+mul r1, 2
+mul r1, 5
+set [r0], r1  ; set the generation limit to 50 in ram.4
+
+add r0, 1
+set r1, 0
+set [r0], r1  ; set the generation counter to 0 in ram.5
+
+
+initialize_rules:
+set r0, 8
+mul r0, r0
+mul r0, 4   ; rules start at 256
+set r1, 1   ; using r1 to increment by powers of 2
+
+; rule 1
+set r2, 0   
+set [r0], r2
+add r0, 1
+
+; rule 2
+set r2, 1 
+set [r0], r2
+add r0, 1
+
+; rule 3
+set r2, 1   
+set [r0], r2
+add r0, 1
+
+; rule 4
+set r2, 1   
+set [r0], r2
+add r0, 1
+
+; rule 5
+set r2, 1   
+set [r0], r2
+add r0, 1
+
+; rule 6
+set r2, 0   
+set [r0], r2
+add r0, 1
+
+; rule 7
+set r2, 0   
+set [r0], r2
+add r0, 1
+
+; rule 8
+set r2, 0   
+set [r0], r2
+
+; set up the main loop
+set r0, 6
+set r1, 1
+set [r0], r1  ; store writing row in RAM.6
+
+add r1, 1
+add r0, 1
+set [r0], r1  ; store reading row in RAM.7
+
+main_loop:
+
+set r3, print_row, r7
+set r9, new_generation, r7
+
+set r0, 6
+set r0, [r0]
+jmpz r3, r3  ; print the row!
+
+new_generation:
+set r0, 2
+set r0, [r0]
+set r1, 1
+set [r1], r0 ; set the rule counter to the width
+
+; swap the rows
+; ram.6 writing row number
+; ram.7 reading row number
+; ram.8 row 1 pointer
+; ram.9 row 2 pointer 
+; ram.11 writing pointer
+; ram.12 reading pointer
+
+set r0, 7
+set r1, 6
+set r2, [r0]   ; r2 has the writing row number
+set r3, [r1]   ; r3 has the reading row number
+set [r0], r3
+set [r1], r2
+
+; set the new write pointer
+set r5, 7
+add r5, r2
+set r4, [r5] ; get the pointer to the row
+set r5, 9
+add r5, 2 ; the location of the write pointer
+set [r5], r4
+
+; set the new read pointer
+set r5, 7
+add r5, r3
+set r4, [r5]
+set r5, 9
+add r5, 3
+set [r5], r4
+
+; get the write pointer
+set r3, get_row_pointer, r7
+set r0, 6
+set r0, [r0]
+set r9, new_gen_got_write_ptr, r7
+jmpz r3, r3
+
+new_gen_got_write_ptr:
+add r0, 1 ; skip the padding
+set r1, 9
+add r1, 2 ; store the write pointer in ram.11
+set [r1], r0
+
+; get the read pointer
+set r3, get_row_pointer, r7
+set r0, 7
+set r0, [r0]
+set r9, new_gen_got_read_ptr, r7
+jmpz r3, r3
+
+new_gen_got_read_ptr:
+set r1, 9
+add r1, 3  ; store the read pointer in ram.12
+set [r1], r0
+
+evaluate_next_rule:
+set r3, evaluate_rule, r7
+set r9, new_gen_write, r7
+jmpz r3, r3
+
+new_gen_write:
+set r1, 9
+add r1, 2  ; write ptr in ram.11
+set r2, [r1]
+set [r2], r0 ; store the new cell value!
+add r2, 1
+
+set [r1], r2  ; increment the write pointer
+
+add r1, 1
+set r0, [r1]
+add r0, 1
+set [r1], r0 ; increment the read pointer
+
+set r5, 1
+set r4, [r5]
+add r4, r6
+set [r5], r4
+set r3, evaluate_next_rule, r7
+jmpz r3, r4 ; loop through the rules
+
+after_evaluation:
+set r3, print_row, r7
+set r1, 6
+set r0, [r1]
+set r6, 0
+set r6, [r6]
+set r1, 4
+set r1, [r1]
+mul r1, r6
+set r2, 5
+set r2, [r2]
+add r1, r2
+set r9, new_generation, r7
+jmpz r3, r1 ; check to see if we're done
+
+outl r1
+halt
+
+print_row:
+; print the specified row (in r0) to the console
+; with a trailing generation number, 
+; return addr in r9
+set r6, 0      ; print_row instructions start here
+
+set r6, [r6]   ; use r6 for subtraction
+
+set r1, r0
+add r1, r6
+set r0, r1
+add r0, 8     ; get the row pointer
+set r0, [r0]  ; r0 now points to the row in ram
+add r0, 1     ; skip the padding
+
+set r1, 2
+set r1, [r1]  ; r1 holds the width...and is our loop counter
+
+set r3, print_loop, r7
+
+print_loop:
+set r2, [r0]
+outs r2
+add r0, 1
+add r1, r6
+jmpz r3, r1   ; loop
+
+set r0, 5
+set r1, [r0]
+outl r1
+
+add r1, 1     ; increment the generation counter
+set [r0], r1
+
+jmpz r9, r9   ; return
+
+
+first_generation:
+; return address in r9
+; this initializes the first generation with data
+; start with row 1
+
+set r0, 8
+set r0, [r0]
+add r0, 5
+set r1, 1
+set [r0], r1
+jmpz r9, r9
+
+evaluate_rule:
+; r0 contains the location of where we're starting the read from
+; returns result in r0
+; r9 is the return address
+; uses r1, r2, r3, r4
+
+set r1, 0
+set r2, [r0]
+add r1, r2
+
+add r0, 1  ; next location
+set r2, [r0]
+mul r2, 2
+add r1, r2
+
+add r0, 1  ; next location
+set r2, [r0]
+mul r2, 4
+add r1, r2
+
+set r6, 0
+set r6, [r6]
+
+set r2, 0
+set r3, 1
+
+set r0, 8
+mul r0, r0
+mul r0, 4   ; rules start at 256
+add r0, r1
+set r0, [r0]
+jmpz r9, r9
+
+get_row_pointer:
+; requested row in r0
+; pointer returned in r0
+; return addr in r9
+
+set r1, r0
+set r0, 8
+set r6, 0
+set r6, [r6]
+add r1, r6
+add r0, r1
+set r0, [r0]
+jmpz r9, r9

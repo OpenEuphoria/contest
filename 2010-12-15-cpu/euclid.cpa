@@ -1,0 +1,67 @@
+; finds the GCD of two numbers using the Euclidean algorithm
+; depends on: stack.cpa, division.cpa, less-than.cpa
+;
+; to assemble:
+; eui assem.ex euclid.cpa division.cpa stack.cpa less-than.cpa > gcd.cpu
+
+; first, set up a stack to use
+set r0, init-stack, r1
+set r9, done-init-stack, r1
+jmpz r0, r0
+
+done-init-stack:
+set r8, 5
+mul r8, 9
+mul r8, 7
+mul r8, 5
+mul r8, 6
+mul r8, 5
+
+set r7, 9
+mul r7, 6
+mul r7, 5
+mul r7, 7
+mul r7, 7
+mul r7, 3
+
+outs r8 ; print a
+outs r7 ; print b
+
+push-b:
+set r6, push-stack, r1 ; push b onto the stack
+set r9, pushed-b, r1
+
+set r0, r7
+jmpz r6, r6  ; push b
+
+pushed-b:
+
+; divide
+set r3, division-subroutine, r5
+set r9, store-division-result, r5
+set r0, r8  ; r0 = dividend
+set r1, r7  ; r1 = divisor
+
+jmpz r3, r3  ; do the division
+
+store-division-result:
+
+set r7, r1  ; r7 = remainder
+
+; pop the previous remainder
+set r2, pop-stack, r3
+set r9, popped-previous-remainder, r3
+jmpz r2, r2 ; puts the previous remainder in r0
+
+popped-previous-remainder:
+set r8, r0 ; put the last remainder into r8
+
+; do it again...unless we've hit zero
+set r3, push-b, r4
+jmpz r3, r7  ; jump to push-b, unless we're finished 
+
+outl r8 ; print the result!
+
+halt ; all done!
+
+

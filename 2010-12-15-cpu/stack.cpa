@@ -1,0 +1,76 @@
+; sets up a stack pointer at ram.999
+; return value in r9
+; uses r0, r1
+
+init-stack:
+set r0, 9  ; set up r0 = 999
+mul r0, 5
+mul r0, 2
+
+set r1, 9
+add r0, r1
+
+mul r1, 5
+mul r1, 4
+mul r1, 5
+add r0, r1  ; r0 = 999
+
+set r1, r0
+set [r0], r1 ; stack pointer at ram.999, points to 999
+jmpz r9, r9
+
+; ******************************************************
+; pushes a value onto the stack
+; value in r0, return addr in r9
+; uses r0, r1, r2, r3
+push-stack:
+set r3, r0 ; remember the new value in r3
+set r0, 9  ; set up r0 = 999
+mul r0, 5
+mul r0, 2
+
+set r1, 9
+add r0, r1
+
+mul r1, 5
+mul r1, 4
+mul r1, 5
+add r0, r1  ; r0 = 999
+
+set r1, [r0] ; get the stack pointer into r1
+set r2, 0
+set r2, [r2]
+add r1, r2
+set [r0], r1
+set [r1], r3
+
+jmpz r9, r9 ; return from push-stack
+
+; ******************************************************
+; pops the last pushed value from the stack and returns it in r0
+; r9 holds the return addr
+; uses r0, r1, r2, r3
+
+pop-stack:
+set r0, 9  ; set up r0 = 999
+mul r0, 5
+mul r0, 2
+
+set r1, 9
+add r0, r1
+
+mul r1, 5
+mul r1, 4
+mul r1, 5
+add r0, r1  ; r0 = 999
+
+set r1, [r0]
+set r2, [r1] ; get the value
+
+set r3, 0
+set [r1], r3
+add r1, 1
+set [r0], r1
+set r0, r2
+
+jmpz r9, r9 ; return from pop-stack
