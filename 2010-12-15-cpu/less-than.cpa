@@ -1,0 +1,30 @@
+; less than subroutine for two positive numbers
+; tests for r0 < r1
+; returns r0 = 1 if true, ro = 0 otherwise
+; return address goes into r9
+; also uses r2, r3, r4, r5
+
+less-than-subroutine:
+
+set r2, 0
+set r2, [r2]
+mul r0, r2
+mul r1, r2
+
+set r3,less-than-loop, r5
+set r4, less-than-might-be-true, r5
+
+less-than-loop:
+add r1, 1
+
+jmpz r4, r1 ; not there yet...
+
+set r0, 0
+jmpz r9, r9  ; not less than!
+
+less-than-might-be-true:
+add r0, 1
+jmpz r3, r0 ; not there yet...
+
+set r0, 1
+jmpz r9, r9  ; end of less than

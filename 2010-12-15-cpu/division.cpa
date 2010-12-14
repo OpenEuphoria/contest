@@ -1,0 +1,81 @@
+; division-subroutine
+; returns the result of r0 / r1
+; quotient in r0, remainder in r1
+; return address in r9
+; requires less-than-subroutine
+; uses all registers
+
+division-subroutine:
+; r8: quotient
+; r7: remainder
+; r6: -divisor
+
+; save the parameters
+set r8, 0  ; quotient
+set r7, r0 ; remainder
+set r6, r1 ; divisor
+
+set r0, r9
+set r9, do-division, r1
+set r1, push-stack, r2
+jmpz r1, r1 ; push the return addr onto the stack
+
+do-division:
+
+set r2, 0
+set r2, [r2]
+mul r6, r2  ; we'll subtract the divisor each time through the loop
+
+set r9, division-loop-back, r4
+set r3, less-than-subroutine, r4
+set r0, r7  ; r0 = remainder
+set r1, r6  ; r1 = -divisor
+set r2, 0
+set r2, [r2]
+mul r1, r2
+jmpz r3, r3 ; see if we even have anything to do...
+
+
+division-subtract-loop:
+add r8, 1   ; quotient  += 1
+add r7, r6  ; remainder -= divisor
+
+set r1, r7  ; r1 = remainder
+set r0, r6  ; r0 = -divisor
+set r2, 0
+set r2, [r2]
+mul r0, r2    ; r6 = -divisor, so we multiply by -1
+
+set r3, division-check-less, r4
+jmpz r3, r1
+
+set r3, division-done, r4
+jmpz r3, r3 ; zero remainder
+
+division-check-less:
+set r3, less-than-subroutine, r4  ; check if divisor < remainder
+set r9, division-check-remainder, r4
+jmpz r3, r3
+
+division-check-remainder:
+
+set r3, division-loop-back, r4  ; use the result of less-than
+
+jmpz r3, r0  ; test for end of division conditions
+
+division-done:
+set r2, pop-stack, r3 ; pop the return addr off the stack
+set r9, division-return, r3
+jmpz r2, r2  ; call pop-stack
+
+division-return:
+set r9, r0
+set r0, r8 ; quotient into r0
+set r1, r7 ; remainder into r1
+jmpz r9, r9
+
+division-loop-back:
+set r3, division-subtract-loop, r4
+jmpz r3, r3
+
+
