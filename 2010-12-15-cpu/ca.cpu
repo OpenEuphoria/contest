@@ -1,96 +1,439 @@
-205
-402
-302 -- jump to 12 (over subroutines)
-000
-229 -- function for getting a line pointer (REG.0 = row#, REG.1=return, pointer returned in REG.2)
-821 -- REG.2 = ROW.2 pointer
-706 -- see if we found the right line by decrementing REG.0
-019 -- If REG.0 = 1, we found it...
-010 -- Return
-228
-821
-011 -- Return!
-205 Start with 5...calculating repetition
-405 Make it 25
-212
-901 WIDTH is in RAM[2]
-209 This is the WIDTH
-213 We'll store it at RAM[3]
-910
-205 Get ready to store the pointer to ROW1
-404 
-301 The row proper starts at 21
-218 
-901 ROW1 pointer in RAM[8]
-222
-832 Put WIDTH into REG[3]
-323 Add the padding REG[2] += REG[3]
-602 Add the width to figure out where to put ROW2 in RAM
-205 Get ready to store the pointer to ROW2
-219 
-921 ROW2 pointer in RAM[9]
-332 Add spacing to REG[3]
-432 Double it -- this is our loop counter for zeroing out that RAM
-260 Use REG[6] for decrementing
-866 Put -1 in REG[6]
-258
-845 Put the ROW1 pointer in REG[4]
-646
-200 REG[0] = 0
-277 REG[7] will hold the branch target
-476 7*6 = 42
-370 +0 = 42 (line 43)
-904	ZERO it out! -----  BRANCH TARGET!
-636 Decrement REG[3], the loop counter
-341 Increment pointer in REG[]
-073 Jump back as needed!
-204 rules pointer at RAM[4]
-215 
-655 they'll start at RAM[10]
-910
-201 -- First rule
-905
-251
-201 -- Second rule
-905
-251
-201 -- Third rule
-905
-251
-200 -- Fourth rule
-905
-251
-200 -- Fifth rule
-905
-251
-200 -- Sixth rule
-905
-251
-201 -- Seventh rule
-905
-299 -- REPLACE THE ZERO WITH THE BRANCH FOR WHERE WE'LL INIITALIZE (GOSUB!)
-499 -- Multiply (replace the ZERO)
-491 -- Multiply (replace the ZERO)
-399 -- Add (replace the ZERO)
-288 -- THIS WILL BE WHERE THE SUBROUTINE RETURNS TO
-489 -- 72
-386 -- 78 (line 79)         this could be some arbitrary amount of 
-099 -- GOSUB INITIALIZE!    initialization, so tack it on the end
-295 -- REG[9] will be our overall loop counter for how many generations
-455 -- Multiply to adjust generation count
-350 -- Add to adjust generation count
-205
-995 -- Store the loop counter in RAM.5
-281 -- REG[8] stores the row we're writing to
-351
-985 RAM.6 has the writng row
-272 -- REG[7] stores the row we're reading from
-351
-975 RAM.7 has the reading row
+202		; set	r0, 2		; ram location for the width: ram.2
+215		; set	r1, 5		
+416		; mul	r1, 6		; set the width to be 30
+910		; set	[r0], r1		; store the width
+215		; set	r1, 5		
+414		; mul	r1, 4		
+208		; set	r0, 8		
+910		; set	[r0], r1		; pointer to row 1 in ram.8
+319		; add	r1, 9		
+319		; add	r1, 9		
+221		; set	r2, 1		
+921		; set	[r1], r2		; set a cell to get things going
+312		; add	r1, 2		; rows have a one element padding
+222		; set	r2, 2		
+822		; set	r2, [r2]		; load the width into r2
+612		; add	r1, r2		
+301		; add	r0, 1		
+910		; set	[r0], r1		; store pointer to row 2 in ram.9
+319		; add	r1, 9		
+319		; add	r1, 9		
+221		; set	r2, 1		
+921		; set	[r1], r2		; set a cell to get things going
+204		; set	r0, 4		
+215		; set	r1, 5		
+412		; mul	r1, 2		
+415		; mul	r1, 5		
+910		; set	[r0], r1		; set the generation limit to 50 in ram.4
+301		; add	r0, 1		
+210		; set	r1, 0		
+910		; set	[r0], r1		; set the generation counter to 0 in ram.5
+208		; set	r0, 8	label: initialize_rules		
+700		; mul	r0, r0		
+404		; mul	r0, 4		; rules start at 256
+211		; set	r1, 1		; using r1 to increment by powers of 2
+220		; set	r2, 0		
+920		; set	[r0], r2		
+301		; add	r0, 1		
+221		; set	r2, 1		
+920		; set	[r0], r2		
+301		; add	r0, 1		
+221		; set	r2, 1		
+920		; set	[r0], r2		
+301		; add	r0, 1		
+221		; set	r2, 1		
+920		; set	[r0], r2		
+301		; add	r0, 1		
+221		; set	r2, 1		
+920		; set	[r0], r2		
+301		; add	r0, 1		
+220		; set	r2, 0		
+920		; set	[r0], r2		
+301		; add	r0, 1		
+220		; set	r2, 0		
+920		; set	[r0], r2		
+301		; add	r0, 1		
+220		; set	r2, 0		
+920		; set	[r0], r2		
+206		; set	r0, 6		
+211		; set	r1, 1		
+910		; set	[r0], r1		; store writing row in RAM.6
+311		; add	r1, 1		
+301		; add	r0, 1		
+910		; set	[r0], r1		; store reading row in RAM.7
+230
+271
+637
+677
+330
+677
+330
+677
+637
+677
+330
+677
+637
+677
+637
+677
+330
+677
+637
+677
+330		; set	r3, print_row, r7		
+290
+271
+390
+677
+390
+677
+697
+677
+697
+677
+390
+677
+697
+677
+697
+677
+390
+677
+390
+677
+390		; set	r9, new_generation, r7		
+206		; set	r0, 6		
+800		; set	r0, [r0]		
+033		; jmpz	r3, r3		; print the row!
+202		; set	r0, 2	label: new_generation		
+800		; set	r0, [r0]		
+211		; set	r1, 1		
+901		; set	[r1], r0		; set the rule counter to the width
+207		; set	r0, 7		
+216		; set	r1, 6		
+820		; set	r2, [r0]		; r2 has the writing row number
+831		; set	r3, [r1]		; r3 has the reading row number
+930		; set	[r0], r3		
+921		; set	[r1], r2		
+257		; set	r5, 7		
+652		; add	r5, r2		
+845		; set	r4, [r5]		; get the pointer to the row
+259		; set	r5, 9		
+352		; add	r5, 2		; the location of the write pointer
+945		; set	[r5], r4		
+257		; set	r5, 7		
+653		; add	r5, r3		
+845		; set	r4, [r5]		
+259		; set	r5, 9		
+353		; add	r5, 3		
+945		; set	[r5], r4		
+230
+271
+330
+677
+637
+677
+637
+677
+637
+677
+330
+677
+637
+677
+330
+677
+637
+677
+637
+677
+330		; set	r3, get_row_pointer, r7		
+206		; set	r0, 6		
+800		; set	r0, [r0]		
+290
+271
+697
+677
+697
+677
+697
+677
+697
+677
+390
+677
+697
+677
+390
+677
+697
+677
+390
+677
+390		; set	r9, new_gen_got_write_ptr, r7		
+033		; jmpz	r3, r3		
+301		; add	r0, 1	label: new_gen_got_write_ptr		; skip the padding
+219		; set	r1, 9		
+312		; add	r1, 2		; store the write pointer in ram.11
+901		; set	[r1], r0		
+230
+271
+330
+677
+637
+677
+637
+677
+637
+677
+330
+677
+637
+677
+330
+677
+637
+677
+637
+677
+330		; set	r3, get_row_pointer, r7		
+207		; set	r0, 7		
+800		; set	r0, [r0]		
+290
+271
+390
+677
+390
+677
+390
+677
+390
+677
+390
+677
+697
+677
+697
+677
+697
+677
+390
+677
+390		; set	r9, new_gen_got_read_ptr, r7		
+033		; jmpz	r3, r3		
+219		; set	r1, 9	label: new_gen_got_read_ptr		
+313		; add	r1, 3		; store the read pointer in ram.12
+901		; set	[r1], r0		
+230
+271
+637
+677
+330
+677
+330
+677
+637
+677
+637
+677
+330
+677
+330
+677
+637
+677
+637
+677
+330		; set	r3, evaluate_rule, r7		
+290
+271
+390
+677
+697
+677
+697
+677
+697
+677
+390
+677
+390
+677
+390
+677
+390
+677
+697
+677
+390		; set	r9, new_gen_write, r7		
+033		; jmpz	r3, r3		
+219		; set	r1, 9	label: new_gen_write		
+312		; add	r1, 2		; write ptr in ram.11
+821		; set	r2, [r1]		
+902		; set	[r2], r0		; store the new cell value!
+321		; add	r2, 1		
+921		; set	[r1], r2		; increment the write pointer
+311		; add	r1, 1		
+801		; set	r0, [r1]		
+301		; add	r0, 1		
+901		; set	[r1], r0		; increment the read pointer
+251		; set	r5, 1		
+845		; set	r4, [r5]		
+646		; add	r4, r6		
+945		; set	[r5], r4		
+230
+271
+637
+677
+637
+677
+330
+677
+330
+677
+330
+677
+637
+677
+637
+677
+637
+677
+330
+677
+330		; set	r3, evaluate_next_rule, r7		
+034		; jmpz	r3, r4		; loop through the rules
+230
+271
+637
+677
+330
+677
+330
+677
+637
+677
+330
+677
+637
+677
+637
+677
+330
+677
+637
+677
+330		; set	r3, print_row, r7		
+216		; set	r1, 6		
+801		; set	r0, [r1]		
+260		; set	r6, 0		
+866		; set	r6, [r6]		
+214		; set	r1, 4		
+811		; set	r1, [r1]		
+716		; mul	r1, r6		
+225		; set	r2, 5		
+822		; set	r2, [r2]		
+612		; add	r1, r2		
+290
+271
+390
+677
+390
+677
+697
+677
+697
+677
+390
+677
+697
+677
+697
+677
+390
+677
+390
+677
+390		; set	r9, new_generation, r7		
+031		; jmpz	r3, r1		; check to see if we're done
+?1		; outl	r1		
+100		; halt			
+260		; set	r6, 0	label: print_row		; print_row instructions start here
+866		; set	r6, [r6]		; use r6 for subtraction
+510		; set	r1, r0		
+616		; add	r1, r6		
+501		; set	r0, r1		
+308		; add	r0, 8		; get the row pointer
+800		; set	r0, [r0]		; r0 now points to the row in ram
+301		; add	r0, 1		; skip the padding
+212		; set	r1, 2		
+811		; set	r1, [r1]		; r1 holds the width...and is our loop counter
+230
+271
+330
+677
+330
+677
+330
+677
+637
+677
+330
+677
+330
+677
+330
+677
+637
+677
+637
+677
+330		; set	r3, print_loop, r7		
+820		; set	r2, [r0]	label: print_loop		
+??2		; outs	r2		
+301		; add	r0, 1		
+616		; add	r1, r6		
+031		; jmpz	r3, r1		; loop
+205		; set	r0, 5		
+810		; set	r1, [r0]		
+?1		; outl	r1		
+311		; add	r1, 1		; increment the generation counter
+910		; set	[r0], r1		
+099		; jmpz	r9, r9		; return
+208		; set	r0, 8	label: first_generation		
+800		; set	r0, [r0]		
+305		; add	r0, 5		
+211		; set	r1, 1		
+910		; set	[r0], r1		
+099		; jmpz	r9, r9		
+210		; set	r1, 0	label: evaluate_rule		
+820		; set	r2, [r0]		
+612		; add	r1, r2		
+301		; add	r0, 1		; next location
+820		; set	r2, [r0]		
+422		; mul	r2, 2		
+612		; add	r1, r2		
+301		; add	r0, 1		; next location
+820		; set	r2, [r0]		
+424		; mul	r2, 4		
+612		; add	r1, r2		
+260		; set	r6, 0		
+866		; set	r6, [r6]		
+220		; set	r2, 0		
+231		; set	r3, 1		
+208		; set	r0, 8		
+700		; mul	r0, r0		
+404		; mul	r0, 4		; rules start at 256
+601		; add	r0, r1		
+800		; set	r0, [r0]		
+099		; jmpz	r9, r9		
+510		; set	r1, r0	label: get_row_pointer		
+208		; set	r0, 8		
+260		; set	r6, 0		
+866		; set	r6, [r6]		
+616		; add	r1, r6		
+601		; add	r0, r1		
+800		; set	r0, [r0]		
+099		; jmpz	r9, r9		
 100
-208 -- SUBROUTINE INITIALIZE <------
-800 -- Put the ROW[1] pointer into REG[0]
-309 -- Move over some...
-211
-910
-088 -- RETURN FROM SUBROUTINE
