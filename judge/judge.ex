@@ -1,13 +1,24 @@
 --****
 -- == Judge
 --
+-- See ##eui judge.ex --help## for description of the command line arguments
+--
+-- Example command line use:
+-- {{{
+-- % eui judge\judge.ex -d 2010-12-15 -n cpu basics.cpu 10 \
+--         basics2.cpu 10 speed.cpu life.cpu
+-- 4 tests, 22 total iterations, 19 submissions
+-- }}}
+--
 
+include std/cmdline.e
 include std/console.e
 include std/convert.e
-include std/cmdline.e
 include std/datetime.e as dt
 include std/filesys.e
 include std/map.e
+include std/math.e
+include std/sequence.e
 
 include common.e
 
@@ -42,12 +53,19 @@ end procedure
 procedure find_submissions()
 	sequence contestants = dir(common:entries_dir)
 	for i = 1 to length(contestants) do
-		if contestants[i][1] = '.' then
+		if contestants[i][1][1] = '.' then
 			continue
 		end if
 
 		sequence cont_dir = common:entries_dir & SLASH & contestants[i][1]
-		sequence entries = dir(cont_dir & SLASH & common:contest_name & "*.ex")
+		object entries = dir(cont_dir & SLASH & common:contest_name & "*.ex")
+		if not sequence(entries) then
+			continue
+		end if
+
+		for j = 1 to length(entries) do
+			submissions &= { canonical_path(cont_dir & SLASH & entries[j][1]) }
+		end for
 	end for
 end procedure
 
@@ -58,7 +76,15 @@ procedure main()
 		{   0, 0, 0,                       { MANDATORY } }
 	}
 		
-	map opts = cmd_parse(options)
+	map opts = cmd_parse(options, { HELP_RID,
+		"Addition arguments are:\n" &
+		"\n" &
+		"    testfile [iterations] ... testfile_n [iterations]\n" &
+		"\n" &
+		"Test files should exist under the contest date-name directory\n" &
+		"and have an associated .out file that contains the correct\n" &
+		"output for the given test. This is the control file."
+	})
 
 	common:contest_date = dt:parse(map:get(opts, "d"), "%Y-%m-%d")
 	common:contest_name = map:get(opts, "n")
@@ -76,6 +102,11 @@ procedure main()
 	configure_test_specs(map:get(opts, cmdline:EXTRAS))
 	find_submissions()
 
+	printf(1, "%d tests, %d total iterations, %d submissions", {
+		length(common:tests),
+		sum(vslice(common:tests, 4)),
+		length(common:submissions)
+	})
 end procedure
 
 main()
