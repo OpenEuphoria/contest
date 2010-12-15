@@ -104,35 +104,4 @@
 ?9		; outl	R9		
 ?9		; outl	R9		
 ?9		; outl	R9		
-100		; halt			
-100
-Code size: 107
-,Label Bits: 8 (256)
-fixup: label zero_jumps_bad at 102
-	add 2 -> 2
-	add 4 -> 6
-	add 32 -> 38
-	add 64 -> 102
-fixup: label one_jumps at 97
-	add 1 -> 1
-	add 32 -> 33
-	add 64 -> 97
-{
-  {
-    "zero_didnt_jump_good",
-    67
-  },
-  {
-    "one_didnt_jump_bad",
-    92
-  },
-  {
-    "one_jumps",
-    97
-  },
-  {
-    "zero_jumps_bad",
-    102
-  }
-}
-
+100		; halt
