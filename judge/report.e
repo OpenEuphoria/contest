@@ -4,7 +4,6 @@ include common.e
 include db.e
 
 include std/eds.e
-include std/datetime.e
 include std/sort.e
 
 export function generate( sequence db_name )
@@ -17,13 +16,31 @@ export function generate( sequence db_name )
 	sequence submissions = read_submissions()
 	
 	output &= write_table( 
-					"Total Time",
-					stdsort:custom_sort( routine_id("report:by_total_time"), submissions  )
+					"Total Time Interpreted",
+					filter_by( 
+						stdsort:custom_sort( routine_id("report:by_total_time"), submissions  ),
+						SK_MODE,
+						MODE_INTERP,
+						FILTER_EQUAL
+						),
+					SD_TOTAL
 					)
 	
+	output &= write_table( 
+					"Total Time Translated",
+					filter_by( 
+						stdsort:custom_sort( routine_id("report:by_total_time"), submissions  ),
+						SK_MODE,
+						MODE_TRANS,
+						FILTER_EQUAL
+						),
+					SD_TOTAL
+					)
+					
 	output &= write_table(
 					"Tokens",
-					stdsort:custom_sort( routine_id("report:by_token_count"), submissions )
+					stdsort:custom_sort( routine_id("report:by_token_count"), submissions ),
+					SD_TOKENS
 					)
 	return output
 end function
@@ -40,7 +57,7 @@ function read_submissions()
 	return submissions
 end function
 
-function write_table( sequence title, sequence submissions )
+function write_table( sequence title, sequence submissions, integer delta_column = 0 )
 	sequence output = sprintf("\n== %s\n", {title})
 	-- table header
 -- 	public enum
@@ -67,32 +84,60 @@ function write_table( sequence title, sequence submissions )
 -- 		10, 10 * 230.203, 230.203, 230.204, 230.203,
 -- 		89_893_150, 1_291_928
 -- 	})
-	output &= "|| User || File || Mode || Date || Status || Iterations || Total Time "
-	output &= "|| Max Time || Avg Time || Min Time || Tokens || File Size ||\n"
-	
+	output &= "|| User || File || Mode || Status || Iterations || Total Time "
+	output &= "|| Max Time || Avg Time || Min Time || Tokens || File Size ||"
+	atom leader = 0
+	if delta_column then
+		output &= " Delta ||"
+		if length( submissions ) then
+			leader = submissions[1][delta_column]
+		end if
+	end if
+	output &= "\n"
 	for i = 1 to length( submissions ) do
-		output &= format_submission( submissions[i] )
+		output &= format_submission( submissions[i], delta_column, leader )
 	end for
 	return output
 end function
 
-function format_submission( sequence sub )
+function format_submission( sequence sub, integer delta_column, atom leader )
 	sequence output = ""
 	
 	output &= sprintf( "| %s | %s | ", sub[SK_USER..SK_FILE] )
 		
-	if sub[SK_MODE] = MODE_INTERP then output &= "Interpreted"
-	else                               output &= "Translated"
+	if sub[SK_MODE] = MODE_INTERP then output &= "Interpreted | "
+	else                               output &= "Translated | "
 	end if
-	
-	output &= sprintf(" | %s | ", { datetime:format( sub[SD_TIME], "%Y-%m-%d" ) } )
 	
 	if sub[SD_STATUS] = STATUS_PASS then output &= "Pass"
 	else                                 output &= "Fail"
 	end if
 	
-	output &= sprintf( " | %d | %0.4fs | %0.4fs | %0.4fs | %0.4fs | %d | %d |\n", sub[SD_COUNT..SD_FILESIZE] )
-	return output
+	output &= sprintf( " | %d | %0.4fs | %0.4fs | %0.4fs | %0.4fs | %d | %d |", sub[SD_COUNT..SD_FILESIZE] )
+	
+	if delta_column then
+		output &= sprintf( " %g |", sub[delta_column] - leader )
+	end if
+	return output & "\n"
+end function
+
+enum by * 2
+	FILTER_EQUAL,
+	FILTER_LESS,
+	FILTER_GREATER
+function filter_by( sequence submissions, integer column, object pivot, integer comparison )
+	sequence filtered = {}
+	for i = 1 to length( submissions ) do
+		sequence sub = submissions[i]
+		integer c = compare( sub[column], pivot )
+		if (c < 0 and and_bits( comparison, FILTER_LESS ) )
+		or (c = 0 and and_bits( comparison, FILTER_EQUAL ) )
+		or (c > 0 and and_bits( comparison, FILTER_GREATER ) ) 
+		then
+			filtered = append( filtered, sub )
+		end if
+	end for
+	return filtered
 end function
 
 --**

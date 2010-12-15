@@ -139,5 +139,10 @@ ifdef MOCK then
 		89_893_150, 1_291_928
 	})
 	
+	add_submission({ "mattlewis", "cpu-brute.ex", MODE_TRANS }, {
+		datetime:now(), STATUS_PASS,
+		10, 10 * 2.203, 0.203, 0.204, 0.203,
+		89_893_150, 1_291_928
+	})
 	close()
 end ifdef
