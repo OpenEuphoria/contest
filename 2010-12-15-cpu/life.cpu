@@ -1,0 +1,165 @@
+265 r6=5    (width)  *** game of life *** 
+462 r6*=2   (10) 
+275 r7=5    (height) 
+472 r7*=2   (10) 
+289 r8=9    (stack pointer) 
+484 r8*=4   (36) 
+381 r8+=1   (37) 
+483 r8*=3   (111) 
+483 r8*=3   (333) 
+483 r8*=3   (999) 
+211 r1=1 
+855 r5=[r5]   (-1) 
+209 r0=9     (glider) 
+304 r0+=4   (13) 
+910 [r0]=r1       1 
+606 r0+=r6          1 
+301 r0+=1       1 1 1    
+910 [r0]=r1 
+606 r0+=r6 
+910 [r0]=r1 
+605 r0+=r5 
+910 [r0]=r1 
+605 r0+=r5 
+910 [r0]=r1 
+456 r5*=6 
+455 r5*=5   (how many iterations) 
+506 r0=r6   (cell address)  <-- main_loop 
+302 r0+=2 
+230 r3=0    (row counter) 
+833 r3=[r3] (-1) 
+737 r3*=r7 
+220 r2=0    (col counter)   <-- row_loop 
+822 r2=[r2] (-1) 
+726 r2*=r6  (-width) 
+321 r2+=1 
+810 r1=[r0] (cell state) 
+301 r0+=1 
+??1 
+321 r2+=1 
+297 r9=7 
+495 r9*=5   (35) 
+092 if r2 col_loop 
+810 r1=[r0] (cell state) 
+301 r0+=1 
+?1 
+331 r3+=1 
+296 r9=6 
+495 r9*=5   (30) 
+391 r9+=1   (31) 
+093 if r3 row_loop 
+200 r0=0 
+506 r0=r6 (cell address) 
+302 r0+=2 
+230 r3=0  (counter = -width*height) 
+833 r3=[r3] (-1) 
+736 r3*=r6 
+737 r3*=r7 
+220 r2=0  (counter of living neighbors)  <-- neighbor_loop 
+842 r4=[r2] (-1) 
+514 r1=r4 
+716 r1*=r6 
+614 r1+=r4 
+610 r1+=r0 
+891 r9=[r1] (load neighbor northwest) 
+629 r2+=r9 
+311 r1+=1 
+891 r9=[r1] (load neighbor north) 
+629 r2+=r9 
+311 r1+=1 
+891 r9=[r1] (load neighbor northeast) 
+629 r2+=r9 
+616 r1+=r6 
+891 r9=[r1] (load neighbor east) 
+629 r2+=r9 
+616 r1+=r6 
+891 r9=[r1] (load neighbor southeast) 
+629 r2+=r9 
+614 r1+=r4 
+891 r9=[r1] (load neighbor south) 
+629 r2+=r9 
+614 r1+=r4 
+891 r9=[r1] (load neighbor southwest) 
+629 r2+=r9 
+640 r4+=r0 
+894 r9=[r4] (load neighbor west) 
+629 r2+=r9 
+300 nop ??2 
+810 r1=[r0] (load cell) 
+299 r9=9 
+495 r9*=5   (45) 
+493 r9*=3   (135) 
+392 r9+=2   (137) 
+091 if r1 cell_alive 
+240 r4=0                <-- dead_cell 
+844 r4=[r4] (-1) 
+443 r4*=3   (-3) 
+642 r4+=r2  (dead cells live when 3 neighbors) 
+297 r9=7 
+497 r9*=7   (49) 
+394 r9+=4   (53) 
+492 r9*=2   (106) 
+094 if r4 next_cell 
+240 r4=0                 <-- push_cell 
+844 r4=[r4] (-1) 
+684 r8+=r4 
+908 [r8]=r0  (put cell on the stack to invert later) 
+301 r0+=1                <-- next_cell 
+331 r3+=1 
+299 r9=9 
+492 r9*=2   (18) 
+391 r9+=1   (19) 
+493 r9*=3   (57) 
+093 if r3 neighbor_loop 
+808 r0=[r8]              <-- invert_loop 
+295 r9=5 
+495 r9*=5   (25) 
+495 r9*=5   (125) 
+090 if r0 invert_cell 
+?0 
+351 r5+=1 
+299 r9=9 
+394 r9+=4   (13) 
+492 r9*=2   (26) 
+095 if r5 main_loop 
+100 halt 
+810 r1=[r0]             <-- invert_cell 
+220 r2=0 
+822 r2=[r2] (-1) 
+712 r1*=r2 
+311 r1+=1 
+910 [r0]=r1 
+381 r8+=1 
+298 r9=8 
+497 r9*=7   (56) 
+492 r9*=2   (112) 
+391 r9+=1   (113) 
+099 if r9 invert_loop 
+240 r4=0              <-- cell_alive 
+844 r4=[r4] (-1) 
+443 r4*=3   (-3) 
+642 r4+=r2 
+299 r9=9 
+398 r9+=8   (17) 
+493 r9*=3   (51) 
+493 r9*=3   (153) 
+094 if r4 cell_alive2  (if neighbors!=3) 
+300 nop 
+297 r9=7 
+497 r9*=7   (49) 
+394 r9+=4   (53) 
+492 r9*=2   (106) 
+099 if r9 next_cell 
+300 nop 
+341 r4+=1              <-- cell_alive2 
+299 r9=9 
+398 r9+=8   (17) 
+493 r9*=3   (51) 
+492 r9*=2   (102) 
+094 if r4 push_cell    (if neighbors!=2) 
+297 r9=7 
+497 r9*=7   (49) 
+394 r9+=4   (53) 
+492 r9*=2   (106) 
+099 if r9 next_cell 
+100 halt

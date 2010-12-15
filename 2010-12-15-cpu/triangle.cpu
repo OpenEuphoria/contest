@@ -1,0 +1,127 @@
+300 ; bouncing 1s ver 2 
+300 ; using nops to allow for less 'advanced' interpreters 
+300 ; set reg 0 to -1, allows countdowns, not ued for anything else 
+200 
+800 
+300 ; reg 1 will contain the number 
+300 ; reg 2 will contain 10 
+225 ; set reg 2 to 5 
+422 ; reg 2 * 2 = 10 
+211 ; reg 1 = 1 
+300 
+300 ; set base ram address to 100, hold 100 in ram[1] 
+251 ; set reg 5 to 1 
+752 ; reg 5 = reg 5 * reg 2 
+752 ; reg 5 = reg 5 * reg 2 ( = 100) 
+951 ; set ram[1] to reg 5 (100) 
+595 ; set reg 9 to reg 5 (100) - this will be the base address for the ram pattern 
+300 ; using reg 9 as mem address reg 
+300 
+278 ; r7 = 8 
+300   672 ; r7 += r2 (12) - exceeds size of an integer 
+292 ; r9 = 2 
+979 ; [r9] = r7 (RAM 2 = 12 for quick recall) 
+300 
+300 ; set r9 back to 100 
+291 
+899							 
+300 ; set each of the ram memory cells 
+919 ; [9] = r1 
+?1 
+712 ; r1 *= r2 
+670 ; r7 += r0 (-1) 
+300 ; set r8 to jmp address (27) 
+289 ; r8 = 9 
+483 ; r8 *= 3 (27) 
+391 ; inc r9 
+087 ; jmp r8 r7!=0 
+300 
+272 ; r5 = 2 
+877 ; r7 = [5] (back to 12) 
+371 ; r7 += 1 (finishes at 0, so need extra 1) 
+291 ; r9 = 1 
+899 ; r9 = [9] (back to 100) 
+300 
+300 ; calculate jmp address 
+285 ; r8 = 5 
+489 ; r8 *= 9 
+384 ; r8 += 4 (jmp address = 49) 
+670 ; r7 += r0 (12 -1) 
+300 ; now add r1 to each of the cells, except the last one 
+839 ; r3 = [9] 
+631 ; r3 += r1 
+939 ; [9] = r3 
+391 ; inc r9 
+670 ; dec r7 (r7 += r0) 
+?3 
+087 ; jmp r8 r7!=0 
+300 
+300 ; now start cycling up and down ram, and printing it out 
+300 ; set r9 back to 100 
+291 ; r9 = 1 
+899 ; r9 = [9]							 
+272 ; r7 = 2 
+877 ; r7 = [7] (back to 12) 
+670 ; r7 += 1 (finishes at 0, so need extra 1) 
+241 ; r4 = 1 will be direction switch - first up 
+300 
+300 ; r5 and r6 will be delay counters 
+300 ; will store in [5] and [6] 
+259 ; r5 = 9 
+459 ; r5 *= 9	<- delay 
+285 ; r8 = 5 
+958 ; [8] = r5 
+269 ; r6 = 9 
+461 ; r6 *= 1	<- delay 
+286 ; r8 = 6 
+968 ; [8] = r6 
+300 
+300 ; calculate jmp address 
+285 ; r8 = 5 
+482 ; r8 *= 2 
+487 ; r8 *= 8 
+384 ; r8 += 7	(87) 
+300 
+300 
+300 
+300 ; main loop 
+839 ; r3 = [9] 
+?3 ; ?r3 
+300 ; temporariliy store main loop jmp in [9] 
+259 ; r5 = 9 
+985 ; [5] = r8 
+255 ; r5 = 5 
+855 ; r5 = [5] 
+300 ; outer delay loop 
+266 ; r6 = 6 
+866 ; r6 = [6] 
+300 ; inner delay loop 
+285 ; r8 = 5 
+482 ; r8 *= 2 
+489 ; r8 *= 9 
+387 ; r8 += 7	(97) 
+660 ; r6 += r0 
+086 ; jmp r8 r6!=0 
+266 ; r6 = 6 
+866 ; r6 = [6] 
+285 ; r8 = 5 
+482 ; r8 *= 2 
+489 ; r8 *= 9 
+384 ; r8 += 4	(94) 
+650 ; r5 += r0 
+085 ; jmp r8 r6!=0 
+255 ; r5 = 5 
+855 ; r5 = [5] 
+300 
+300 ; pull off temp main loop loc 
+289 ; r8 = 9 
+888 ; r8 = [8] 
+694 ; r9 += r4 inc address 
+670 ; r7 += r0 dec conter 
+087 ; loop r8 if r7 
+740 ; r4 *= r0 flip direction 
+272 ; r7 = 2 
+877 ; r7 = [7] (back to 12) 
+670 ; r7 += r0 dec counter 
+088 ; jmp r8 
+100 ; halt

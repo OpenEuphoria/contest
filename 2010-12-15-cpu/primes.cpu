@@ -1,0 +1,39 @@
+866 r6=[r6] (-1)  *** primes up to 1000 ***  
+278 r7=8 
+475 r7*=5   (40) 
+475 r7*=5   (200) 
+475 r7*=5   (1000) 
+776 r7*=r6  (-1000) 
+202 r0=2    (2 is first prime) 
+810 r1=[r0] (is prime when r1=0) 
+295 r9=5 
+494 r9*=4   (20) 
+091 if r1 not_prime 
+?0          (print prime) 
+530 r3=r0   (init counter) 
+540 r4=r0   (init index) 
+341 r4+=1 
+554 r5=r4   (label2:) 
+657 r5+=r7  (subtract 1000) 
+299 r9=9 
+493 r9*=3   (27) 
+095 if r5 label3 
+301 r0+=1 
+550 r5=r0 
+657 r5+=r7  (subtract 1000) 
+297 r9=7 
+095 if r5 main_loop 
+100 halt 
+300 nop 
+636 r3+=r6  (subtract 1) 
+299 r9=9 
+398 r9+=8   (17) 
+492 r9*=2   (34) 
+093 if r3 label4 
+904 [r4]=r0 (write nonzero to ram) 
+530 r3=r0   (reset counter) 
+341 r4+=1 
+295 r9=5 
+493 r9*=3   (15) 
+094 if r4 label2 
+100 ; halt
