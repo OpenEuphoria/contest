@@ -1,0 +1,60 @@
+??0 ; Checks initial register values
+??1 ;
+??2 ;  AND TESTS
+??3 ;
+??4 ; print *SPACE*
+??5 ;    and
+??6 ; print *NewLine*
+??7 ;
+??8 ;
+?9  ; 0 0 0 0 0 0 0 0 0 0
+211 ; test setting a register
+??1 ; 1
+311 ; test adding to a register
+??1 ; 1 2
+412 ; test multiplying a register
+??1 ; 1 2 4
+521 ; test copying a register
+??2 ; 1 2 4 4
+612 ; test adding 2 registers
+??1 ; 1 2 4 4 8
+712 ; test multiplying 2 registers
+??1 ; 1 2 4 4 8 32
+426 ; 24
+322 ; 26
+022 ; test goto if not 0
+100 ; halt ; this should be skipped
+323 ; r[2] = 29
+020 ; test goto if not 0; Should fall through
+322 ; r[2] = 31 ; ?2 will be 29 if skipped
+?2  ; 1 2 4 4 8 32 31
+800 ; test getting memory and that RAM address 0 = -1
+??0 ; -1
+933 ; test putting register in memory
+424 ; by putting 0 at RAM 0
+321 ; Scan all RAM address = 0
+720 ;
+428 ;
+530 
+317 ; Point to next line
+331 ; Starts as 0 + 1
+321 ; Starts as -1000 + 1
+893 ; Get from RAM r3
+541 ;
+348 ;
+049 ; go down to "?3" if a slot isn't 0
+012 ; go up to "331 ; Starts as 0 + 1"
+331 ; 1000
+?3  ; -1 1000
+909 ;
+200 ; Reset memory and registers
+210 ; if last number = 0 then write register to RAM Failed 
+230 ; if last number is 1-999 then
+240 ;   points to first non zero RAM address
+100 ; halt
+
+--------------
+Output
+0 0 0 0 0 0 0 0 0 0
+1 2 4 4 8 32 31
+-1 1000
