@@ -21,6 +21,7 @@ include std/math.e
 include std/sequence.e
 
 include common.e
+include test.e
 
 procedure configure_test_specs(sequence args)
 	integer i = 1
@@ -50,10 +51,14 @@ procedure configure_test_specs(sequence args)
 	end while
 end procedure
 
-procedure find_submissions()
+procedure find_submissions(sequence ignored_users, sequence only_users)
 	sequence contestants = dir(common:entries_dir)
 	for i = 1 to length(contestants) do
-		if contestants[i][1][1] = '.' then
+		if contestants[i][1][1] = '.' or find(contestants[i][1], ignored_users) then
+			continue
+		end if
+
+		if length(only_users) and not find(contestants[i][1], only_users) then
 			continue
 		end if
 
@@ -64,7 +69,7 @@ procedure find_submissions()
 		end if
 
 		for j = 1 to length(entries) do
-			submissions &= { canonical_path(cont_dir & SLASH & entries[j][1]) }
+			submissions &= {{ contestants[i][1], canonical_path(cont_dir & SLASH & entries[j][1]) }}
 		end for
 	end for
 end procedure
@@ -73,6 +78,8 @@ procedure main()
 	sequence options = {
 		{ "n", 0, "Contest name",          { HAS_PARAMETER, "name", ONCE, MANDATORY } },
 		{ "d", 0, "Contest deadline date", { HAS_PARAMETER, "YYYY-MM-DD", ONCE, MANDATORY } },
+		{ "i", 0, "Ignore user",           { HAS_PARAMETER, "user", MULTIPLE } },
+		{ "o", 0, "Only user",             { HAS_PARAMETER, "user", MULTIPLE } },
 		{   0, 0, 0,                       { MANDATORY } }
 	}
 		
@@ -100,13 +107,21 @@ procedure main()
 	end if
 
 	configure_test_specs(map:get(opts, cmdline:EXTRAS))
-	find_submissions()
+	find_submissions(map:get(opts, "i", {}), map:get(opts, "o", {}))
 
-	printf(1, "%d tests, %d total iterations, %d submissions", {
+	-- For progress compuations
+	for i = 1 to length(common:tests) do
+		common:total_tests += common:tests[i][TEST_COUNT]
+	end for
+	common:total_tests *= length(common:submissions)
+
+	printf(1, "%d submissions, %d tests, %d total iterations\n\n", {
+		length(common:submissions),
 		length(common:tests),
-		sum(vslice(common:tests, 4)),
-		length(common:submissions)
+		common:total_tests
 	})
+
+	run_tests()
 end procedure
 
 main()

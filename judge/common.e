@@ -8,10 +8,11 @@ include std/datetime.e
 
 public datetime contest_date
 public sequence contest_name, contest_dir, entries_dir
+public integer total_tests = 0
 
 public sequence submissions = {}
 
-public enum TEST_NAME, TEST_COUNT
+public enum TEST_NAME, TEST_FILE, TEST_CNTL, TEST_COUNT
 
 --**
 -- NAME/COUNT pairs of tests to run

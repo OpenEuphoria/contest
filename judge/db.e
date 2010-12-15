@@ -37,7 +37,7 @@ public enum
 	SD_TOKENS, SD_FILESIZE
 
 public enum MODE_INTERP, MODE_TRANS
-public enum STATUS_PASS, STATUS_FAIL
+public enum STATUS_FAIL=-1, STATUS_UNKNOWN, STATUS_PASS
 
 public type submission_key(object o)
 	if not sequence(o) then return 0 end if
@@ -63,6 +63,24 @@ public type submission(object o)
 
 	return 1
 end type
+
+public function new_sk(sequence username, sequence filename, integer mode)
+	return { username, filename, mode }
+end function
+
+public function new_submission()
+	return {
+		datetime:now(),
+		STATUS_UNKNOWN,
+		0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0,
+		0
+	}
+end function
 
 public function open(sequence filename)
     integer status = db_open(filename, DB_LOCK_EXCLUSIVE)
