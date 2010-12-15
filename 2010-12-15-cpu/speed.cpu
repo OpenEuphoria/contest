@@ -1,0 +1,28 @@
+800 ; r[0] = -1
+299
+499 ; Play with the
+498 ; last digit
+498 ; of these 4's
+498 ; to change the
+498 ; initial multiplier
+498 ; (Time between ticks)
+493
+491 ; (491's are nop)
+491
+491
+?9  ;
+212 ; 60 = 2*6*5
+413 ; 
+414 ; loop 1
+529 ; loop 2
+620
+239 ; jump point (this_line # - 1)
+339
+620
+032 ; end loop 2
+610
+630
+630
+?1  ;
+031 ; end loop 1
+100 ; Halt
