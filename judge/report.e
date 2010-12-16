@@ -19,28 +19,28 @@ export function generate( sequence db_name )
 					"Total Time Interpreted",
 					filter_by( 
 						stdsort:custom_sort( routine_id("report:by_total_time"), submissions  ),
-						SK_MODE,
+						SR_MODE,
 						MODE_INTERP,
 						FILTER_EQUAL
 						),
-					SD_TOTAL
+					SR_TOTAL
 					)
 	
 	output &= write_table( 
 					"Total Time Translated",
 					filter_by( 
 						stdsort:custom_sort( routine_id("report:by_total_time"), submissions  ),
-						SK_MODE,
+						SR_MODE,
 						MODE_TRANS,
 						FILTER_EQUAL
 						),
-					SD_TOTAL
+					SR_TOTAL
 					)
 					
 	output &= write_table(
 					"Tokens",
 					stdsort:custom_sort( routine_id("report:by_token_count"), submissions ),
-					SD_TOKENS
+					SR_TOKENS
 					)
 	return output
 end function
@@ -61,10 +61,10 @@ function write_table( sequence title, sequence submissions, integer delta_column
 	sequence output = sprintf("\n== %s\n", {title})
 	-- table header
 -- 	public enum
--- 	SK_USER, SK_FILE, SK_MODE,
--- 	SD_TIME, SD_STATUS,
--- 	SD_COUNT, SD_TOTAL, SD_MAX, SD_AVG, SD_MIN,
--- 	SD_TOKENS, SD_FILESIZE
+-- 	SR_USER, SR_FILE, SR_MODE,
+-- 	SR_TIME, SR_STATUS,
+-- 	SR_COUNT, SR_TOTAL, SR_MAX, SR_AVG, SR_MIN,
+-- 	SR_TOKENS, SR_FILESIZE
 -- |=Idx |=Name     |=Description                      |
 -- |  *1 | user     | Username on openeuphoria.org     |
 -- |  *2 | file     | Filename of the given submission |
@@ -103,17 +103,17 @@ end function
 function format_submission( sequence sub, integer delta_column, atom leader )
 	sequence output = ""
 	
-	output &= sprintf( "| %s | %s | ", sub[SK_USER..SK_FILE] )
+	output &= sprintf( "| %s | %s | ", sub[SR_USER..SR_FILE] )
 		
-	if sub[SK_MODE] = MODE_INTERP then output &= "Interpreted | "
+	if sub[SR_MODE] = MODE_INTERP then output &= "Interpreted | "
 	else                               output &= "Translated | "
 	end if
 	
-	if sub[SD_STATUS] = STATUS_PASS then output &= "Pass"
+	if sub[SR_STATUS] = STATUS_PASS then output &= "Pass"
 	else                                 output &= "Fail"
 	end if
 	
-	output &= sprintf( " | %d | %0.4fs | %0.4fs | %0.4fs | %0.4fs | %d | %d |", sub[SD_COUNT..SD_FILESIZE] )
+	output &= sprintf( " | %d | %0.4fs | %0.4fs | %0.4fs | %0.4fs | %d | %d |", sub[SR_COUNT..SR_FILESIZE] )
 	
 	if delta_column then
 		output &= sprintf( " %g |", sub[delta_column] - leader )
@@ -144,11 +144,11 @@ end function
 -- Sorts submissions by total time, with passing submissions
 -- above failing submissions.
 function by_total_time( sequence a, sequence b )
-	integer c = compare( a[SD_STATUS], b[SD_STATUS] )
+	integer c = compare( a[SR_STATUS], b[SR_STATUS] )
 	if c then
 		return c
 	else
-		return compare( a[SD_TOTAL], b[SD_TOTAL] )
+		return compare( a[SR_TOTAL], b[SR_TOTAL] )
 	end if
 end function
 
@@ -156,11 +156,11 @@ end function
 -- Sorts submissions by total time, with passing submissions
 -- above failing submissions.
 function by_token_count( sequence a, sequence b )
-	integer c = compare( a[SD_STATUS], b[SD_STATUS] )
+	integer c = compare( a[SR_STATUS], b[SR_STATUS] )
 	if c then
 		return c
 	else
-		return compare( a[SD_TOKENS], b[SD_TOKENS] )
+		return compare( a[SR_TOKENS], b[SR_TOKENS] )
 	end if
 end function
 
