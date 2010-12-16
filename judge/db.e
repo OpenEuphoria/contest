@@ -9,16 +9,16 @@
 -- |  *1 | user     | Username on openeuphoria.org     |
 -- |  *2 | file     | Filename of the given submission |
 -- |  *3 | mode     | INTERP/TRANS                     |
--- |   1 | name     | Test name                        |
--- |   2 | time     | Testing timestamp                |
--- |   3 | status   | PASS/FAIL status indicator       |
--- |   4 | count    | Count of iterations executed     |
--- |   5 | total    | Total time taken for all tests   |
--- |   6 | max      | Maximum iteration time           |
--- |   7 | avg      | Average iteration time           |
--- |   8 | min      | Minimum iteration time           |
--- |   9 | tokens   | Number of tokens                 |
--- |  10 | filesize | Filesize in bytes                |
+-- |  *4 | name     | Test name                        |
+-- |   1 | time     | Testing timestamp                |
+-- |   2 | status   | PASS/FAIL status indicator       |
+-- |   3 | count    | Count of iterations executed     |
+-- |   4 | total    | Total time taken for all tests   |
+-- |   5 | max      | Maximum iteration time           |
+-- |   6 | avg      | Average iteration time           |
+-- |   7 | min      | Minimum iteration time           |
+-- |   8 | tokens   | Number of tokens                 |
+-- |   9 | filesize | Filesize in bytes                |
 --
 
 namespace db
@@ -32,10 +32,10 @@ constant
 	submission_tn = "submissions"
 
 public enum
-	SK_USER, SK_FILE, SK_MODE
+	SK_USER, SK_FILE, SK_MODE, SK_NAME
 
 public enum
-	SD_NAME, SD_TIME, SD_STATUS,
+	SD_TIME, SD_STATUS,
 	SD_COUNT, SD_TOTAL, SD_MAX, SD_AVG, SD_MIN,
 	SD_TOKENS, SD_FILESIZE
 	
@@ -54,13 +54,13 @@ public type submission_key(object o)
 	if not sequence(o[SK_USER]) then return 0 end if
 	if not sequence(o[SK_FILE]) then return 0 end if
 	if not integer(o[SK_MODE])  then return 0 end if
+	if not sequence(o[SK_NAME]) then return 0 end if
 
 	return 1
 end type
 
 public type submission(object o)
 	if not sequence(o)             then return 0 end if
-	if not sequence(o[SD_NAME])    then return 0 end if
 	if not datetime(o[SD_TIME])    then return 0 end if
 	if not integer(o[SD_STATUS])   then return 0 end if
 	if not integer(o[SD_COUNT])    then return 0 end if
@@ -74,13 +74,12 @@ public type submission(object o)
 	return 1
 end type
 
-public function new_sk(sequence username, sequence filename, integer mode)
-	return { username, filename, mode }
+public function new_sk(sequence username, sequence filename, integer mode, sequence name)
+	return { username, filename, mode, name }
 end function
 
 public function new_submission()
 	return {
-		"UNKNOWN",      -- SD_NAME
 		datetime:now(), -- SD_TIME
 		STATUS_UNKNOWN, -- SD_STATUS
 		0,              -- SD_COUNT
@@ -126,7 +125,7 @@ end procedure
 public procedure add_submission(submission_key sk, submission s)
     integer ix = db_find_key(sk, submission_tn)
     if ix > 0 then
-        db_replace_data( ix, s)
+        db_replace_data(ix, s)
 	else
     	if db_insert(sk, s, submission_tn) != DB_OK then
 			display({ sk, s })

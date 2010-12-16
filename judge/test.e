@@ -37,10 +37,9 @@ public procedure run_tests()
 
 			printf(1, "\t%s (%d): ", { test[TEST_NAME], test[TEST_COUNT] })
 
-			db:submission_key sk = new_sk(contestant, filename(subfname), db:MODE_INTERP)
+			db:submission_key sk = new_sk(contestant, filename(subfname), db:MODE_INTERP, test[TEST_NAME])
 			db:submission sub = new_submission()
 
-			sub[SD_NAME]     = test[TEST_NAME]
 			sub[SD_TOTAL]    = time()
 			sub[SD_FILESIZE] = filesize
 			sub[SD_TOKENS]   = tokcount
