@@ -12,7 +12,7 @@ public integer total_tests = 0
 
 public sequence submissions = {}
 
-public enum TEST_NAME, TEST_FILE, TEST_CNTL, TEST_COUNT
+public enum TEST_NAME, TEST_FILE, TEST_CNTL, TEST_CHECKSUM, TEST_COUNT
 
 --**
 -- NAME/COUNT pairs of tests to run

@@ -29,11 +29,11 @@ procedure configure_test_specs(sequence args)
 	while i <= length(args) do
 		sequence test_file = canonical_path(common:contest_dir & SLASH & args[i])
 		sequence cntl_file = canonical_path(common:contest_dir & SLASH & filebase(args[i]) & ".out")
-		sequence test = { args[i], test_file, cntl_file, 1 }
+		sequence test = { args[i], test_file, cntl_file, 0, 1 }
 		if i < length(args) then
 			integer count = to_integer(args[i + 1], 0)
 			if count then
-				test[4] = count
+				test[TEST_COUNT] = count
 				i += 1
 			end if
 		end if
@@ -45,6 +45,8 @@ procedure configure_test_specs(sequence args)
 		if not file_exists(cntl_file) then
 			abort(1, "Control file not found: %s\n", { cntl_file })
 		end if
+
+		test[TEST_CHECKSUM] = checksum(cntl_file)
 
 		common:tests &= { test }
 		i += 1
