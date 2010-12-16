@@ -154,6 +154,12 @@ export function sort( sequence submissions, sequence columns = {} )
 end function
 
 export function distinct( sequence submissions, integer column )
-	
-	return 0
+	sequence filtered = {}
+	for i = 1 to length( submissions ) do
+		object val = submissions[i][column]
+		if not find( val, filtered ) then
+			filtered = append( filtered, val )
+		end if
+	end for
+	return sort( filtered )
 end function
