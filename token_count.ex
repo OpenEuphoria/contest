@@ -29,7 +29,8 @@ function glob_patterns(sequence patterns)
 	return result
 end function
 
-sequence cmds = glob_patterns(command_line())
+sequence cmds = command_line()
+cmds = glob_patterns(cmds[3..$])
 
 for i = 1 to length(cmds) do
 	sequence fname = cmds[i]
