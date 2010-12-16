@@ -1,3 +1,8 @@
+ifdef WINDOWS then
+	puts(1, "DOES NOT RUN ON WINDOWS\n")
+	abort(1)
+end ifdef
+
 include std/dll.e
 include std/machine.e
 include std/io.e
