@@ -12,9 +12,18 @@ include std/io.e
 include common.e
 include db.e
 
-public procedure run_tests()
-	sequence cwd = current_dir()
+public procedure run_tests(integer mode)
 	integer total_submissions = length(common:submissions), status = STATUS_UNKNOWN
+	sequence cwd = current_dir(), mode_name
+
+	switch mode do
+		case MODE_INTERP then
+			mode_name = "interpret"
+		case MODE_TRANS then
+			mode_name = "translate"
+		case else
+			abort(1, "Invalid mode: %d", { mode })
+	end switch
 
 	for i = 1 to total_submissions do
 		sequence contestant = common:submissions[i][SUB_USER]
@@ -40,36 +49,70 @@ public procedure run_tests()
 
 		for j = 1 to length(common:tests) do
 			sequence test = common:tests[j]
+			sequence result_file = subfname & "." & test[TEST_NAME] & "-" & mode_name & ".log"
+			sequence cmd
+	
+			printf(1, "\t%s %s (%d): ", { test[TEST_NAME], mode_name, test[TEST_COUNT] })
 
-			printf(1, "\t%s (%d): ", { test[TEST_NAME], test[TEST_COUNT] })
+			switch mode do
+				case MODE_INTERP then
+					mode_name = "interpret"
+					if is_pp then
+						cmd = sprintf("eui %s > %s", { test[TEST_FILE], result_file })
+					else
+						cmd = sprintf("eui %s %s > %s", { subfname, test[TEST_FILE], result_file })
+					end if
+	
+				case MODE_TRANS then
+					sequence executable_name = subfname & "." & test[TEST_NAME] & "-" & mode_name
+					ifdef WINDOWS then
+						executable_name &= ".exe"
+					end ifdef
+	
+					mode_name = "translate"
+					if is_pp then
+						cmd = sprintf("euc -con -o %s %s > %s", {
+							executable_name, test[TEST_FILE], result_file
+						})
+					else
+						cmd = sprintf("euc -con -o %s %s %s > %s", {
+							executable_name, subfname, test[TEST_FILE], result_file
+						})
+					end if
 
-			db:submission_key sk = new_sk(contestant, filename(subfname), db:MODE_INTERP, test[TEST_NAME])
+					printf(1, "txing")
+					system(cmd)
+					printf(1, ", ")
+	
+					-- TODO: Did it translate? Could use system_exec, but it can't
+					-- redirect stdout :-/. Could use pipeio but it can't give me
+					-- an exit code :-/
+	
+					-- Setup the command to run the resulting executable"
+					cmd = sprintf("%s %s > %s", { executable_name, test[TEST_FILE], result_file })
+			end switch
+
+			db:submission_key sk = new_sk(contestant, filename(subfname), mode, test[TEST_NAME])
 			db:submission sub = new_submission()
 
 			sub[SD_TOTAL]    = time()
 			sub[SD_FILESIZE] = filesize
 			sub[SD_TOKENS]   = tokcount
 
+
 			for k = 1 to test[TEST_COUNT] do
-				sequence result_file = subfname & "." & test[TEST_NAME] & ".log"
-				sequence cmd
-
-				if is_pp then
-					cmd = sprintf("eui %s > %s", { test[TEST_FILE], result_file })
-				else
-					cmd = sprintf("eui %s %s > %s", { subfname, test[TEST_FILE], result_file })
-				end if
-
 				atom it_start = time()
 				system(cmd)
 				atom it_dur = time() - it_start
 
-				integer ok = equal( read_file( result_file, TEXT_MODE ), test[TEST_CONTROL])
-				delete_file(result_file)
+				integer ok = equal(read_file(result_file, TEXT_MODE), test[TEST_CONTROL])
+				if not common:debug then
+					delete_file(result_file)
+				end if
 
 				if not ok then
 					sub[SD_STATUS] = STATUS_FAIL
-					printf(1, " failed\n")
+					printf(1, " failed")
 					exit
 				end if
 

@@ -8,7 +8,7 @@ include std/datetime.e
 
 public datetime contest_date
 public sequence contest_name, contest_dir, entries_dir
-public integer total_tests = 0
+public integer total_tests = 0, debug = 0
 
 public sequence submissions = {}
 
