@@ -6,6 +6,11 @@ include db.e
 include std/eds.e
 include std/sort.e
 
+export constant 
+	SPEED_SORT = { SR_STATUS, SR_TOTAL, SR_AVG, SR_MIN, SR_MAX, SR_TOKENS },
+	TOKEN_SORT =  { SR_STATUS, SR_TOKENS, SR_TOTAL, SR_AVG, SR_MIN, SR_MAX }  
+
+export sequence contest_dir = ""
 export function read_submissions( sequence db_name )
 	if DB_OK != db_open( db_name ) then
 		common:abort( 1, "Couldn't open the db: %s", { db_name} )
@@ -18,7 +23,7 @@ export function read_submissions( sequence db_name )
 	if not size then
 		return {}
 	end if
-	? size
+	
 	sequence submissions = repeat( 0, size )
 	for i = 1 to length( submissions ) do
 		submissions[i] = db_record_key( i ) & db_record_data( i )
@@ -72,8 +77,9 @@ end function
 export function format_submission( sequence sub, integer delta_column, atom leader )
 	sequence output = ""
 	
-	output &= sprintf( "| %s | %s | ", sub[SR_USER..SR_FILE] )
-		
+	output &= sprintf( "| %s | [[%s->hg:contest/file/default/%s/entries/%s/%s]] | ", 
+		sub[SR_USER..SR_FILE] & { contest_dir } & sub[SR_USER..SR_FILE] )
+	-- [[hg:contest/file/default/2010-12-15-cpu/entries/ChrisB/cpu.ex|cpu.ex]]
 	if sub[SR_MODE] = MODE_INTERP then output &= "Interpreted"
 	else                               output &= "Translated"
 	end if
@@ -162,4 +168,45 @@ export function distinct( sequence submissions, integer column )
 		end if
 	end for
 	return sort( filtered )
+end function
+
+
+--**
+-- Run a report for a particular test.
+export function test_report( sequence submissions, sequence test_name, integer mode, sequence sorting, integer delta_column )
+	sequence mode_name
+	if mode = MODE_INTERP then
+		mode_name = "Interpreted"
+	elsif mode = MODE_TRANS then
+		mode_name = "Translated"
+	else
+		mode_name = "All"
+	end if
+	
+	submissions = report:sort( submissions, sorting  )
+	if mode != 0 then
+		submissions = filter_by( 
+							submissions,
+							SR_MODE,
+							mode,
+							FILTER_EQUAL
+							)
+	end if
+	
+	if length( test_name ) then
+		submissions = filter_by(
+						submissions,
+						SR_NAME,
+						test_name,
+						FILTER_EQUAL
+					)
+	else
+		test_name = "All"
+	end if
+	
+	return write_table( 
+					sprintf( "%s %s", {test_name, mode_name}),
+					submissions,
+					delta_column
+					)
 end function
