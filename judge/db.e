@@ -118,9 +118,9 @@ public procedure close()
 end procedure
 
 public procedure add_submission(submission_key sk, submission s)
-    atom recid = db_get_recid(sk, submission_tn)
-    if recid > 0 then
-        db_replace_recid(recid, s)
+    integer ix = db_find_key(sk, submission_tn)
+    if ix > 0 then
+        db_replace_data( ix, s)
 	else
     	if db_insert(sk, s, submission_tn) != DB_OK then
 			display({ sk, s })
