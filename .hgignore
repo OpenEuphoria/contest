@@ -3,3 +3,6 @@ logging
 .exe
 results
 judge/cpu.eds
+
+syntax: regexp
+2010-12-15-cpu/entries/.*/*\.cpu

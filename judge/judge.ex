@@ -50,7 +50,7 @@ procedure configure_test_specs(sequence args)
 			abort(1, "Control file not found: %s\n", { cntl_file })
 		end if
 
-		test[TEST_CHECKSUM] = read_file( cntl_file, TEXT_MODE )
+		test[TEST_CONTROL] = read_file( cntl_file, TEXT_MODE )
 
 		common:tests &= { test }
 		i += 1
@@ -99,6 +99,9 @@ procedure main()
 		{ "d", 0, "Contest deadline date", { HAS_PARAMETER, "YYYY-MM-DD", ONCE, MANDATORY } },
 		{ "i", 0, "Ignore user",           { HAS_PARAMETER, "user", MULTIPLE } },
 		{ "o", 0, "Only user",             { HAS_PARAMETER, "user", MULTIPLE } },
+		{   0, "no-translate", "Do not run translated tests", {} },
+		{   0, "no-interpret", "Do not run interpreted tests", {} },
+		{   0, "debug", "Debug mode",      {} },
 		{   0, 0, 0,                       { MANDATORY } }
 	}
 		
@@ -109,13 +112,16 @@ procedure main()
 		"\n" &
 		"Test files should exist under the contest date-name directory\n" &
 		"and have an associated .out file that contains the correct\n" &
-		"output for the given test. This is the control file."
+		"output for the given test. This is the control file.\n" &
+		"\n" &
+		"In debug mode, the test logs are not deleted."
 	})
 
 	common:contest_date = dt:parse(map:get(opts, "d"), "%Y-%m-%d")
 	common:contest_name = map:get(opts, "n")
 	common:contest_dir  = canonical_path(map:get(opts, "d") & "-" & common:contest_name)
 	common:entries_dir  = common:contest_dir & SLASH & "entries"
+	common:debug        = map:get(opts, "debug")
 
 	if not file_exists(contest_dir) then
 		abort(1, "Contest directory does not yet exist: %s", { common:contest_dir })
@@ -145,7 +151,15 @@ procedure main()
 	db:open(datetime:format(common:contest_date, "%Y-%m-%d") & "-" & common:contest_name & SLASH &
 		"results.eds")
 
-	run_tests()
+	if map:get(opts, "no-interpret") = 0 then
+		printf(1, repeat('=', 10) & " INTERPRETED TESTS" & repeat('=', 10) & "\n\n")
+		run_tests(MODE_INTERP)
+	end if
+
+	if map:get(opts, "no-translate") = 0 then
+		printf(1, repeat('=', 10) & " TRANSLATED TESTS " & repeat('=', 10) & "\n\n")
+		run_tests(MODE_TRANS)
+	end if
 
 	db:close()
 end procedure

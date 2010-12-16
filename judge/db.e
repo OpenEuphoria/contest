@@ -37,7 +37,7 @@ public enum
 public enum
 	SD_TIME, SD_STATUS,
 	SD_COUNT, SD_TOTAL, SD_MAX, SD_AVG, SD_MIN,
-	SD_TOKENS, SD_FILESIZE
+	SD_TOKENS, SD_FILESIZE, SD_FUN
 	
 public enum
 	SR_USER, SR_FILE, SR_MODE,
@@ -70,6 +70,7 @@ public type submission(object o)
 	if not atom(o[SD_MIN])         then return 0 end if
 	if not integer(o[SD_TOKENS])   then return 0 end if
 	if not integer(o[SD_FILESIZE]) then return 0 end if
+	if not integer(o[SD_FUN])      then return 0 end if
 
 	return 1
 end type
@@ -85,10 +86,11 @@ public function new_submission()
 		0,              -- SD_COUNT
 		0.0,            -- SD_TOTAL
 		0.0,            -- SD_MAX
-		999_999.0,      -- SD_AVG
-		0.0,            -- SD_MIN
+		0.0,            -- SD_AVG
+		999_999.0,      -- SD_MIN
 		0,              -- SD_TOKENS
-		0               -- SD_FILESIZE
+		0,              -- SD_FILESIZE
+		0               -- SD_FUN
 	}
 end function
 
