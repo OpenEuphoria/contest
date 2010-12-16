@@ -68,6 +68,7 @@ order by result, totaltime
 select 
 	id.user as user, 
 	id.file as program, 
+	if( id.mode = 1, 'Interpreted', 'Translated' ) as runmode
 	if( status > 0, '++Pass++', '--Fail--') as Result, 
 	totaltime,
 	if( fun, 'Yes', '' ) as fun_entry
@@ -77,12 +78,12 @@ order by result, totaltime
 
 `
 	ok = run_sql( sql )
-	ok[2] = dnf_entries( format_entries( ok[2] ), 4 )
+	ok[2] = dnf_entries( format_entries( ok[2] ), 5 )
 	output &= write_table(
 		"speed.cpu Free for All Speed test",
 		ok,
-		{3, 4 },  -- sort columns
-		4 -- delta column
+		{4, 5 },  -- sort columns
+		5 -- delta column
 		)
 	
 	sql = `
@@ -133,25 +134,36 @@ order by pass_score desc, tokens
 select 
 	id.user as user, 
 	id.file as program, 
-	sum( totaltime ) as pass_score,
+	sum( totaltime ) as total_runtime,
+	sum( iterations) as times_run,
 	tokens,
 	if( fun, 'Yes', '' ) as fun_entry
 from submissions
 group by id.user, id.file, tokens, fun_entry
-order by pass_score desc, tokens
+order by times_run desc, total_runtime, tokens
 
 `
 	ok = run_sql( sql )
-	ok[2] = dnf_entries( format_entries( ok[2] ), 3 )
+	sequence 
+		ok_times = {},
+		bad_times = {}
+	for i = 1 to length( ok[2] ) do
+		if ok[2][i][3] < 0 then
+			bad_times = append( bad_times, ok[2][i] )
+		else
+			ok_times = append( ok_times, ok[2][i] )
+		end if
+	end for
+	ok[2] = dnf_entries( format_entries( ok_times & bad_times ), 3 )
 	output &= write_table(
 		"Overall by speed",
 		ok,
-		{3, 4 },  -- sort columns
-		4 -- delta column
+		{4, 3, 5 },  -- sort columns
+		3 -- delta column
 		)
 	
 	-- SUBMISSION LOG:
-	output &= write_submission_log()
+-- 	output &= write_submission_log()
 	
 	return output
 end function
