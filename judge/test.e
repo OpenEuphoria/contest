@@ -7,6 +7,7 @@
 
 include std/console.e
 include std/filesys.e
+include std/io.e
 
 include common.e
 include db.e
@@ -67,7 +68,7 @@ public procedure run_tests()
 					chdir(cwd)
 				end if
 
-				if not equal(checksum(result_file), test[TEST_CHECKSUM]) then
+				if not equal( read_file( result_file, TEXT_MODE ), test[TEST_CHECKSUM]) then
 					sub[SD_STATUS] = STATUS_FAIL
 					printf(1, " failed\n")
 					exit

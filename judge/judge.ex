@@ -19,6 +19,7 @@ include std/filesys.e
 include std/map.e
 include std/math.e
 include std/sequence.e
+include std/io.e
 
 include euphoria/tokenize.e
 
@@ -49,7 +50,7 @@ procedure configure_test_specs(sequence args)
 			abort(1, "Control file not found: %s\n", { cntl_file })
 		end if
 
-		test[TEST_CHECKSUM] = checksum(cntl_file)
+		test[TEST_CHECKSUM] = read_file( cntl_file, TEXT_MODE )
 
 		common:tests &= { test }
 		i += 1

@@ -179,8 +179,7 @@ elsedef
 	constant cc = "gcc"
 end ifdef
 cmd = sprintf("%s \"%s\" -o \"%s\" -O3", { cc, c_name, exe_name } )
-puts( 1, cmd & "\n" )
 system_exec( cmd )
 
 label "execute"
-system_exec( sprintf( "\"./%s\"", {exe_name} ) )
+system_exec( sprintf( "\"%s\"", {exe_name} ) )
