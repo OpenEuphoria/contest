@@ -51,6 +51,7 @@ export procedure open_db( sequence db_name )
 		create_field( db_name, submission_tn, "MINTIME", EUSQL_EU_ATOM, 0 )
 		create_field( db_name, submission_tn, "TOKENS", EUSQL_EU_INTEGER, 0 )
 		create_field( db_name, submission_tn, "FILESIZE", EUSQL_EU_INTEGER, 0 )
+		create_field( db_name, submission_tn, "FUN", EUSQL_EU_INTEGER, 0 )
 		
 		db_select_table( upper( submission_tn ) )
 		for i = 1 to length( submissions ) do
@@ -135,4 +136,16 @@ export function write_table( sequence title, sequence results, sequence sort_col
 		output &= '\n'
 	end for
 	return output
+end function
+
+export function format_entries( sequence submissions, integer user_column = 1, integer entry_column = 2 )
+	for i = 1 to length( submissions ) do
+		sequence sub        = submissions[i]
+		sequence user_name  = sub[user_column]
+		sequence entry_name = sub[entry_column]
+		sub[entry_column] = sprintf( "[[%s->hg:contest/file/default/%s/entries/%s/%s]]", 
+			{ entry_name, contest_dir, user_name, entry_name } )
+		submissions[i] = sub
+	end for
+	return submissions
 end function
