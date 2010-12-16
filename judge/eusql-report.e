@@ -52,10 +52,17 @@ export procedure open_db( sequence db_name )
 		create_field( db_name, submission_tn, "TOKENS", EUSQL_EU_INTEGER, 0 )
 		create_field( db_name, submission_tn, "FILESIZE", EUSQL_EU_INTEGER, 0 )
 		create_field( db_name, submission_tn, "FUN", EUSQL_EU_INTEGER, 0 )
+		create_field( db_name, submission_tn, "TESTLOG", EUSQL_EU_TEXT, 0 )
 		
 		db_select_table( upper( submission_tn ) )
 		for i = 1 to length( submissions ) do
-			db_insert( submissions[i][1], submissions[i][2] )
+			submission_key key  = submissions[i][1]
+			submission     data = submissions[i][2]
+			if sequence( data[SD_FUN] ) then
+				data[SD_FUN] = 0
+			end if
+			
+			db_insert( key, submissions[i][2] )
 		end for
 		close_db( db_name )
 	end if

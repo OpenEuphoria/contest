@@ -9,7 +9,7 @@ contest_dir = "2010-12-15-cpu"
 
 
 function generate( sequence db_name )
-	sequence output = ""
+	sequence output = "= Result Tables\n"
 	
 	report:open_db( db_name )
 	sequence sql = `
@@ -140,6 +140,47 @@ order by pass_score desc, tokens
 		{3, 4 },  -- sort columns
 		4 -- delta column
 		)
+	
+	-- SUBMISSION LOG:
+	output &= write_submission_log()
+	
+	return output
+end function
+
+function write_submission_log()
+	sequence sql = `
+select 
+	id.user, 
+	id.file, 
+	id.testname, 
+	testlog
+from submissions
+order by id.user, id.file, id.testname
+`
+	EUSQLRESULT ok = run_sql( sql )
+	ok[2] = format_entries( ok[2] )
+	
+	sequence output = "= Submission Log\n"
+	sequence current_user = ""
+	sequence current_file = ""
+	sequence logs = ok[2]
+	for i = 1 to length( logs ) do
+		sequence current_log = logs[i]
+		if compare( current_user, current_log[1] ) then
+			output &= sprintf( "\n== %s\n", { current_user } )
+			current_file = ""
+		end if
+		
+		if compare( current_file, current_log[2] ) then
+			output &= sprintf( "=== %s\n", { current_file } )
+			current_file = current_log[2]
+		end if
+		
+		output &= sprintf( "==== %s\n{{{\n%s\n}}}\n", { current_log[3], current_log[4] } )
+	end for
+	
+	
+	
 	return output
 end function
 
@@ -148,6 +189,7 @@ for i = 3 to length( cmd ) do
 	puts(1, generate( cmd[i] ) )
 end for
 
+display( run_sql( "select * from submissions" ) )
 if length( cmd ) < 3 then
 	puts( 2, "You must specify at least one results database.\n" )
 	abort( 1 )
