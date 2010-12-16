@@ -54,13 +54,19 @@ public procedure run_tests(integer mode)
 	
 			printf(1, "\t%s %s (%d): ", { test[TEST_NAME], mode_name, test[TEST_COUNT] })
 
+			if is_pp then
+				sequence pp_file = common:contest_dir & SLASH &
+					filebase(test[TEST_NAME]) & ".pp." & fileext(test[TEST_NAME])
+				delete_file(pp_file)
+			end if
+
 			switch mode do
 				case MODE_INTERP then
 					mode_name = "interpret"
 					if is_pp then
-						cmd = sprintf("eui %s > %s", { test[TEST_FILE], result_file })
+						cmd = sprintf("eui -batch %s > %s", { test[TEST_FILE], result_file })
 					else
-						cmd = sprintf("eui %s %s > %s", { subfname, test[TEST_FILE], result_file })
+						cmd = sprintf("eui -batch %s %s > %s", { subfname, test[TEST_FILE], result_file })
 					end if
 	
 				case MODE_TRANS then
@@ -98,7 +104,6 @@ public procedure run_tests(integer mode)
 			sub[SD_TOTAL]    = time()
 			sub[SD_FILESIZE] = filesize
 			sub[SD_TOKENS]   = tokcount
-
 
 			for k = 1 to test[TEST_COUNT] do
 				atom it_start = time()
