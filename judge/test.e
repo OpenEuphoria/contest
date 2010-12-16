@@ -11,10 +11,6 @@ include std/filesys.e
 include common.e
 include db.e
 
-public procedure line()
-	printf(1, repeat('-', 50) & "\n")
-end procedure
-
 public procedure run_tests()
 	integer total_submissions = length(common:submissions), status = STATUS_UNKNOWN
 
@@ -23,8 +19,6 @@ public procedure run_tests()
 		sequence   subfname = common:submissions[i][SUB_FILENAME]
 		integer    filesize = common:submissions[i][SUB_SIZE]
 		integer    tokcount = common:submissions[i][SUB_TOK_COUNT]
-
-		line()
 
 		printf(1, "%3d%% (%3d/%3d) %s/%s\n", {
 			floor(100 * (i / total_submissions)),
@@ -80,12 +74,24 @@ public procedure run_tests()
 			printf(1, "\n")
 
 			sub[SD_TOTAL] = time() - sub[SD_TOTAL]
-			sub[SD_AVG] = sub[SD_TOTAL] / sub[SD_COUNT]
+
+			if sub[SD_COUNT] = 0 or sub[SD_STATUS] = STATUS_FAIL then
+				sub[SD_AVG]   = -1
+				sub[SD_MIN]   = -1
+				sub[SD_MAX]   = -1
+				sub[SD_TOTAL] = -1
+			else
+				sub[SD_AVG] = sub[SD_TOTAL] / sub[SD_COUNT]
+			end if
+
+			if sub[SD_COUNT] = test[TEST_COUNT] then
+				sub[SD_STATUS] = STATUS_PASS
+			 end if
 
 			add_submission(sk, sub)
 		end for
 
-		line()
+		printf(1, "\n\n")
 
 	end for
 end procedure
