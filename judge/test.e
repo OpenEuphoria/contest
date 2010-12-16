@@ -46,6 +46,14 @@ public procedure run_tests(integer mode)
 			sequence result_file = subfname & "." & test[TEST_NAME] & "-" & mode_name & ".log"
 			sequence cmd
 	
+			db:submission_key sk = new_sk(contestant, filename(subfname), mode, test[TEST_NAME])
+			db:submission sub = new_submission()
+
+			sub[SD_TOTAL]    = time()
+			sub[SD_FILESIZE] = filesize
+			sub[SD_TOKENS]   = tokcount
+			sub[SD_FUN]      = is_fun
+
 			printf(1, "\t%s %s (%d): ", { test[TEST_NAME], mode_name, test[TEST_COUNT] })
 
 			if is_pp then
@@ -83,6 +91,8 @@ public procedure run_tests(integer mode)
 					printf(1, "txing")
 					system(cmd)
 					printf(1, ", ")
+
+					sub[SD_LOG] &= "Translating\n" & read_file(result_file) & "\n"
 	
 					-- TODO: Did it translate? Could use system_exec, but it can't
 					-- redirect stdout :-/. Could use pipeio but it can't give me
@@ -92,20 +102,15 @@ public procedure run_tests(integer mode)
 					cmd = sprintf("%s %s > %s", { executable_name, test[TEST_FILE], result_file })
 			end switch
 
-			db:submission_key sk = new_sk(contestant, filename(subfname), mode, test[TEST_NAME])
-			db:submission sub = new_submission()
-
-			sub[SD_TOTAL]    = time()
-			sub[SD_FILESIZE] = filesize
-			sub[SD_TOKENS]   = tokcount
-			sub[SD_FUN]      = is_fun
-
 			for k = 1 to test[TEST_COUNT] do
 				atom it_start = time()
 				system(cmd)
 				atom it_dur = time() - it_start
 
-				integer ok = equal(read_file(result_file, TEXT_MODE), test[TEST_CONTROL])
+				sequence result_content = read_file(result_file, TEXT_MODE)
+				sub[SD_LOG] &= sprintf("Execution %d\n%s\n", { k, result_content })
+
+				integer ok = equal(result_content, test[TEST_CONTROL])
 				if not common:debug then
 					delete_file(result_file)
 				end if
