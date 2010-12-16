@@ -20,7 +20,7 @@ public procedure run_tests()
 
 	for i = 1 to total_submissions do
 		sequence contestant = common:submissions[i][SUB_USER]
-		sequence submission = common:submissions[i][SUB_FILENAME]
+		sequence   subfname = common:submissions[i][SUB_FILENAME]
 		integer    filesize = common:submissions[i][SUB_SIZE]
 		integer    tokcount = common:submissions[i][SUB_TOK_COUNT]
 
@@ -29,7 +29,7 @@ public procedure run_tests()
 		printf(1, "%3d%% (%3d/%3d) %s/%s\n", {
 			floor(100 * (i / total_submissions)),
 			i, total_submissions,
-			contestant, filebase(submission)
+			contestant, filebase(subfname)
 		})
 
 		for j = 1 to length(common:tests) do
@@ -37,7 +37,7 @@ public procedure run_tests()
 
 			printf(1, "\t%s (%d): ", { test[TEST_NAME], test[TEST_COUNT] })
 
-			db:submission_key sk = new_sk(contestant, filename(submission), db:MODE_INTERP)
+			db:submission_key sk = new_sk(contestant, filename(subfname), db:MODE_INTERP)
 			db:submission sub = new_submission()
 
 			sub[SD_NAME]     = test[TEST_NAME]
@@ -46,9 +46,9 @@ public procedure run_tests()
 			sub[SD_TOKENS]   = tokcount
 
 			for k = 1 to test[TEST_COUNT] do
-				sequence result_file = submission & "." & test[TEST_NAME]
+				sequence result_file = subfname & "." & test[TEST_NAME]
 				sequence cmd = sprintf("eui %s %s > %s", {
-						submission, test[TEST_FILE], result_file
+						subfname, test[TEST_FILE], result_file
 					})
 
 				atom it_start = time()
@@ -56,7 +56,7 @@ public procedure run_tests()
 				atom it_dur = time() - it_start
 
 				if not equal(checksum(result_file), test[TEST_CHECKSUM]) then
-					status = STATUS_FAIL
+					sub[SD_STATUS] = STATUS_FAIL
 					printf(1, " failed\n")
 					exit
 				end if

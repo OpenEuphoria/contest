@@ -32,7 +32,9 @@ constant
 	submission_tn = "submissions"
 
 public enum
-	SK_USER, SK_FILE, SK_MODE,
+	SK_USER, SK_FILE, SK_MODE
+
+public enum
 	SD_NAME, SD_TIME, SD_STATUS,
 	SD_COUNT, SD_TOTAL, SD_MAX, SD_AVG, SD_MIN,
 	SD_TOKENS, SD_FILESIZE
@@ -41,27 +43,27 @@ public enum MODE_INTERP, MODE_TRANS
 public enum STATUS_FAIL=-1, STATUS_UNKNOWN, STATUS_PASS
 
 public type submission_key(object o)
-	if not sequence(o) then return 0 end if
-	if not length(o) = 3 then return 0 end if
-	if not sequence(o[1]) then return 0 end if
-	if not sequence(o[2]) then return 0 end if
-	if not integer(o[3]) then return 0 end if
+	if not sequence(o)          then return 0 end if
+	if not length(o) = 3        then return 0 end if
+	if not sequence(o[SK_USER]) then return 0 end if
+	if not sequence(o[SK_FILE]) then return 0 end if
+	if not integer(o[SK_MODE])  then return 0 end if
 
 	return 1
 end type
 
 public type submission(object o)
-	if not sequence(o) then return 0 end if
-	if not sequence(o[1]) then return 0 end if -- SK_NAME
-	if not datetime(o[2]) then return 0 end if -- SK_TIME
-	if not integer(o[3]) then return 0 end if  -- SK_STATUS
-	if not integer(o[4]) then return 0 end if  -- SK_COUNT
-	if not atom(o[5]) then return 0 end if     -- SK_TOTAL
-	if not atom(o[6]) then return 0 end if     -- SK_MAX
-	if not atom(o[7]) then return 0 end if     -- SK_AVG
-	if not atom(o[8]) then return 0 end if     -- SK_MIN
-	if not integer(o[9]) then return 0 end if  -- SK_TOKENS
-	if not integer(o[10]) then return 0 end if -- SK_FILESIZE
+	if not sequence(o)             then return 0 end if
+	if not sequence(o[SD_NAME])    then return 0 end if
+	if not datetime(o[SD_TIME])    then return 0 end if
+	if not integer(o[SD_STATUS])   then return 0 end if
+	if not integer(o[SD_COUNT])    then return 0 end if
+	if not atom(o[SD_TOTAL])       then return 0 end if
+	if not atom(o[SD_MAX])         then return 0 end if
+	if not atom(o[SD_AVG])         then return 0 end if
+	if not atom(o[SD_MIN])         then return 0 end if
+	if not integer(o[SD_TOKENS])   then return 0 end if
+	if not integer(o[SD_FILESIZE]) then return 0 end if
 
 	return 1
 end type
