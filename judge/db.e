@@ -19,7 +19,8 @@
 -- |   7 | min      | Minimum iteration time           |
 -- |   8 | tokens   | Number of tokens                 |
 -- |   9 | filesize | Filesize in bytes                |
---
+-- |  10 | fun      | Fun submission flag              |
+-- |  11 | testlog  | Output from the submission       |
 
 namespace db
 
@@ -28,7 +29,7 @@ include std/datetime.e
 include std/eds.e
 include std/error.e
 
-constant
+export constant
 	submission_tn = "submissions"
 
 public enum
@@ -43,14 +44,14 @@ public enum
 	SR_USER, SR_FILE, SR_MODE,
 	SR_NAME, SR_TIME, SR_STATUS,
 	SR_COUNT, SR_TOTAL, SR_MAX, SR_AVG, SR_MIN,
-	SR_TOKENS, SR_FILESIZE
+	SR_TOKENS, SR_FILESIZE, SR_FUN, SR_LOG
 
 public enum MODE_INTERP, MODE_TRANS
 public enum STATUS_FAIL=-1, STATUS_UNKNOWN, STATUS_PASS
 
 public type submission_key(object o)
 	if not sequence(o)          then return 0 end if
-	if not length(o) = 3        then return 0 end if
+	if not length(o) = 4        then return 0 end if
 	if not sequence(o[SK_USER]) then return 0 end if
 	if not sequence(o[SK_FILE]) then return 0 end if
 	if not integer(o[SK_MODE])  then return 0 end if
@@ -61,6 +62,7 @@ end type
 
 public type submission(object o)
 	if not sequence(o)             then return 0 end if
+	if length( o ) != SD_LOG       then return 0 end if
 	if not datetime(o[SD_TIME])    then return 0 end if
 	if not integer(o[SD_STATUS])   then return 0 end if
 	if not integer(o[SD_COUNT])    then return 0 end if
@@ -141,22 +143,22 @@ end procedure
 ifdef MOCK then
 	open("cpu.eds")
 	
-	add_submission({ "jeremy", "cpu1.ex", MODE_INTERP }, {
+	add_submission({ "jeremy", "cpu1.ex", MODE_INTERP, "speed.cpu" }, {
 		datetime:now(), STATUS_PASS,
 		10, 10 * 0.203, 0.203, 0.205, 0.204,
-		150, 1928
+		150, 1928, 1
 	})
 	
-	add_submission({ "mattlewis", "cpu-brute.ex", MODE_INTERP }, {
+	add_submission({ "mattlewis", "cpu-brute.ex", MODE_INTERP, "basics2.cpu" }, {
 		datetime:now(), STATUS_PASS,
 		10, 10 * 230.203, 230.203, 230.204, 230.203,
-		89_893_150, 1_291_928
+		89_893_150, 1_291_928, 0
 	})
 	
-	add_submission({ "mattlewis", "cpu-brute.ex", MODE_TRANS }, {
+	add_submission({ "mattlewis", "cpu-brute.ex", MODE_TRANS, "speed.cpu" }, {
 		datetime:now(), STATUS_PASS,
 		10, 10 * 2.203, 0.203, 0.204, 0.203,
-		89_893_150, 1_291_928
+		89_893_150, 1_291_928, 0
 	})
 	close()
 end ifdef
