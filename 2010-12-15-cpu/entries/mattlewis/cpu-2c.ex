@@ -175,11 +175,15 @@ return 0;
 
 ifdef WINDOWS then
 	constant cc = "wcc386"
+	cmd = sprintf("%s -q \"%s\"", { cc, c_name, exe_name } )
+	system( cmd )
+	cmd = sprintf("wlink sys nt file %sobj name %s > nul", { c_name[1..$-1], exe_name })
+	
 elsedef
 	constant cc = "gcc"
+	cmd = sprintf("%s \"%s\" -o \"%s\" -O3", { cc, c_name, exe_name } )
+	system_exec( cmd )
 end ifdef
-cmd = sprintf("%s \"%s\" -o \"%s\" -O3", { cc, c_name, exe_name } )
-system_exec( cmd )
 
 label "execute"
 system_exec( sprintf( "\"%s\"", {exe_name} ) )
