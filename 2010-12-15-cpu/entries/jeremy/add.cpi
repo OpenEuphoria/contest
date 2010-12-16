@@ -1,0 +1,8 @@
+;
+; Add r1 and r2 placing the resulting value
+; into r0, the return register
+;
+
+612 ; r1 += r2
+501 ; r0 = r1
+100 ; return

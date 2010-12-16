@@ -1,0 +1,35 @@
+;
+; Compute the fibonacci number of the given parameter
+;
+; r1 = number to compute to
+; r2 = -1 (from ram)
+; r3 = loop address
+; r4 = 'first'
+; r5 = 'second'
+; r6 = 'temp'
+;
+
+; Get our -1 into r2 from ram
+220
+822
+
+; Set our loop address
+235
+
+; Initialize 'first' and 'second'
+240
+251
+
+; Loop point
+564 ; copy 'first' to temp
+665 ; add 'second' to temp
+545 ; set 'first' to the old 'second'
+556 ; 'set 'second' to temp
+
+; Handle looping
+612 ; deincrement the loop counter
+031 ; repeat loop if not yet zero
+
+; Finished
+504 ; copy 'first' into our return register r0
+100
