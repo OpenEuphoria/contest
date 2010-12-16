@@ -133,11 +133,13 @@ procedure main()
 	end for
 	common:total_tests *= length(common:submissions)
 
-	printf(1, "%d submissions, %d tests, %d total iterations\n\n", {
+	printf(1, repeat('-', 60) & "\n")
+	printf(1, "%d submissions, %d tests, %d total iterations\n", {
 		length(common:submissions),
 		length(common:tests),
 		common:total_tests
 	})
+	printf(1, repeat('-', 60) & "\n\n")
 
 	db:open(datetime:format(common:contest_date, "%Y-%m-%d") & "-" & common:contest_name & SLASH &
 		"results.eds")

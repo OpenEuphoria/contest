@@ -23,7 +23,7 @@ sequence
 	registers = repeat(0,10),
 	RAM = repeat(-1,1000),
 	command = command_line(),
-	sample_program = read_lines( cmds[3] )
+	sample_program = read_lines( command[3] )
 -- 	sample_program = read_lines( "5and10.cpu" )
 
 integer
