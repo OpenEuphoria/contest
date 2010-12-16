@@ -1,13 +1,11 @@
-include std/filesys.e
+
 
 -- Translates cpu code into euphoria code, then runs the result
-
 object
 	cmd = command_line(),
 	name = cmd[3],
-	base = filebase(name),
-	c_name = base & ".c",
-	exe_name = base & "2c"
+	c_name = name & ".c",
+	exe_name = name & "2c"
 
 ifdef WINDOWS then
 	exe_name &= ".exe"
@@ -178,9 +176,9 @@ return 0;
 
 ifdef WINDOWS then
 	constant cc = "wcc386"
-	cmd = sprintf("%s -q \"%s\"", { cc, c_name, exe_name } )
+	cmd = sprintf("%s \"%s\" -fo=\"%sobj\"", { cc, c_name, c_name[1..$-1] } )
 	system( cmd )
-	cmd = sprintf("wlink sys nt file %s.obj name %s > nul", { base, exe_name })
+	cmd = sprintf("wlink sys nt file %sobj name %s > nul", { c_name[1..$-1], exe_name })
 	system(cmd)
 	
 elsedef
