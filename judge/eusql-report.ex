@@ -9,7 +9,15 @@ contest_dir = "2010-12-15-cpu"
 
 
 function generate( sequence db_name )
-	sequence output = "= Result Tables\n"
+	sequence output = `
+@@(title CPU Emulator Contest)@
+%%maxnumlevel = 4
+%%toclevel = 3
+<<TOC level=1>>
+
+`
+	
+	output &= "= Result Tables\n"
 	
 	report:open_db( db_name )
 	sequence sql = `
@@ -176,7 +184,7 @@ order by id.user, id.file, id.testname
 			current_file = current_log[2]
 		end if
 		
-		output &= sprintf( "==== %s\n{{{\n%s\n}}}\n", { current_log[3], current_log[4] } )
+		output &= sprintf( "==== %s\nOutput Log:\n\n{{{\n%s\n}}}\n", { current_log[3], current_log[4] } )
 	end for
 	
 	
