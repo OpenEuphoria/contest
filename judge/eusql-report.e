@@ -89,9 +89,9 @@ function read_submissions()
 	return submissions
 end function
 
-export function write_table( sequence title, sequence results, sequence sort_columns = {}, integer delta_column = 0 )
+export function write_table( sequence title, sequence results, sequence sort_columns = {}, integer delta_column = 0, integer header_level = 2 )
 	
-	sequence output = sprintf("\n== %s\n", { title } )
+	sequence output = sprintf("\n%s %s\n", { repeat( '=', header_level ), title } )
 	
 	output &= "||"
 	

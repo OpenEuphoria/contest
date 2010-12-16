@@ -14,11 +14,13 @@ function generate( sequence db_name )
 @@(title CPU Emulator Contest)@
 %%maxnumlevel = 4
 %%toclevel = 3
-<<TOC level=1 depth=3>>
+%%splitname = cpu
+%%splitlevel = 2
+<<TOC level=1 depth=2>>
 
 `
 	
-	output &= "= Result Tables\n<<LEVELTOC level=1 depth=4>>\n"
+	output &= "= Summary Result Tables\n<<LEVELTOC level=1 depth=4>>\n"
 	
 	report:open_db( db_name )
 	sequence sql = `
@@ -164,7 +166,65 @@ order by times_run desc, total_runtime, tokens
 	
 	-- SUBMISSION LOG:
 -- 	output &= write_submission_log()
+	output &= all_test_tables()
+	return output
+end function
+
+constant TEST_SQL = `
+select 
+	id.user, 
+	id.file, 
+	if( status > 0, '++Pass++', '--Fail--') as Result, 
+	totaltime, 
+	tokens
+from submissions
+where id.testname = [test] and id.mode=[mode]
+order by result, totaltime
+`
+EUSQLRESULT test_query = {}
+function test_table( sequence test, integer mode = 0 )
+	sequence mode_name
+	if mode = 0 then
+		return  sprintf("== %s\n%s\n%s\n", { test[1], test_table( test, MODE_INTERP ), test_table( test, MODE_TRANS ) } )
 	
+	elsif mode = MODE_INTERP then
+		mode_name = "Interpreted"
+		
+	elsif mode = MODE_TRANS then
+		mode_name = "Translated"
+	
+	end if
+	
+	if not length( test_query ) then
+		test_query = parse_sql( TEST_SQL )
+	end if
+	
+	set_parameter( "test", test[1] )
+	set_parameter( "mode", mode )
+	
+	EUSQLRESULT ok = run_query( test_query )
+	
+	ok[2] = dnf_entries( format_entries( ok[2] ), 4 )
+	return write_table(
+		sprintf("%s %s", {test[1], mode_name}),
+		ok,
+		{4, 3, 5 },  -- sort columns
+		3, -- delta column
+		3
+		)
+	
+	
+end function
+
+function all_test_tables()
+	EUSQLRESULT ok
+	sequence output = "= Test Details\n<<LEVELTOC level=1 depth=4>>\n"
+	ok = run_sql( "select distinct id.testname from submissions order by id.testname" )
+	
+	sequence tests = ok[2]
+	for i = 1 to length( tests ) do
+		output &= test_table( tests[i] )
+	end for
 	return output
 end function
 
