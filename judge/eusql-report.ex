@@ -10,10 +10,9 @@ contest_dir = "2010-12-15-cpu"
 
 function generate( sequence db_name )
 	sequence output = `
-!!CONTEXT:report.txt
 @@(title CPU Emulator Contest)@
 %%maxnumlevel = 4
-%%toclevel = 3
+%%toclevel = 1
 %%splitname = cpu
 %%splitlevel = 2
 <<TOC level=1 depth=2>>
