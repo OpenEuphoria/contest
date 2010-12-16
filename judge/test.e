@@ -12,6 +12,7 @@ include common.e
 include db.e
 
 public procedure run_tests()
+	sequence cwd = current_dir()
 	integer total_submissions = length(common:submissions), status = STATUS_UNKNOWN
 
 	for i = 1 to total_submissions do
@@ -40,13 +41,31 @@ public procedure run_tests()
 
 			for k = 1 to test[TEST_COUNT] do
 				sequence result_file = subfname & "." & test[TEST_NAME]
-				sequence cmd = sprintf("eui %s %s > %s", {
-						subfname, test[TEST_FILE], result_file
+				sequence cmd
+				integer was_pp =0
+
+				if match("-pp", subfname) then
+					sequence subfname_dir = dirname(subfname)
+
+					chdir(subfname_dir)
+					cmd = sprintf("eui %s > %s", {
+						test[TEST_FILE], result_file
 					})
+
+					was_pp = 1
+				else
+					cmd = sprintf("eui %s %s > %s", {
+							subfname, test[TEST_FILE], result_file
+						})
+				end if
 
 				atom it_start = time()
 				system(cmd)
 				atom it_dur = time() - it_start
+
+				if was_pp then
+					chdir(cwd)
+				end if
 
 				if not equal(checksum(result_file), test[TEST_CHECKSUM]) then
 					sub[SD_STATUS] = STATUS_FAIL
@@ -91,7 +110,7 @@ public procedure run_tests()
 			add_submission(sk, sub)
 		end for
 
-		printf(1, "\n\n")
+		printf(1, "\n")
 
 	end for
 end procedure
