@@ -6,6 +6,10 @@ include db.e
 include std/eds.e
 include std/sort.e
 
+export constant 
+	SPEED_SORT = { SR_STATUS, SR_TOTAL, SR_AVG, SR_MIN, SR_MAX, SR_TOKENS },
+	TOKEN_SORT =  { SR_STATUS, SR_TOKENS, SR_TOTAL, SR_AVG, SR_MIN, SR_MAX }  
+
 export sequence contest_dir = ""
 export function read_submissions( sequence db_name )
 	if DB_OK != db_open( db_name ) then
@@ -169,7 +173,7 @@ end function
 
 --**
 -- Run a report for a particular test.
-export function test_report( sequence submissions, sequence test_name, integer mode, sequence sorting )
+export function test_report( sequence submissions, sequence test_name, integer mode, sequence sorting, integer delta_column )
 	sequence mode_name
 	if mode = MODE_INTERP then
 		mode_name = "Interpreted"
@@ -203,6 +207,6 @@ export function test_report( sequence submissions, sequence test_name, integer m
 	return write_table( 
 					sprintf( "%s %s", {test_name, mode_name}),
 					submissions,
-					SR_TOTAL
+					delta_column
 					)
 end function
