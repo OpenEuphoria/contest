@@ -59,7 +59,7 @@ export function write_table( sequence title, sequence submissions, integer delta
 -- 		89_893_150, 1_291_928
 -- 	})
 	output &= "|| User || File || Mode || Test || Status || Iterations || Total Time "
-	output &= "|| Max Time || Avg Time || Min Time || Tokens || File Size ||"
+	output &= "|| Max Time || Avg Time || Min Time || Tokens || File Size || Fun Entry ||"
 	atom leader = 0
 	if delta_column then
 		output &= " Delta ||"
@@ -93,6 +93,10 @@ export function format_submission( sequence sub, integer delta_column, atom lead
 	
 	output &= sprintf( " | %d | %0.4fs | %0.4fs | %0.4fs | %0.4fs | %d | %d |", sub[SR_COUNT..SR_FILESIZE] )
 	
+	if sub[SR_FUN] then
+		output &= " Yes "
+	end if
+	output &= " |"
 	if delta_column then
 		output &= sprintf( " %g |", sub[delta_column] - leader )
 	end if
