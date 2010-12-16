@@ -28,7 +28,7 @@ include std/datetime.e
 include std/eds.e
 include std/error.e
 
-constant
+export constant
 	submission_tn = "submissions"
 
 public enum
