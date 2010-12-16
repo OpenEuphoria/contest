@@ -85,8 +85,8 @@ public function new_submission()
 		0,              -- SD_COUNT
 		0.0,            -- SD_TOTAL
 		0.0,            -- SD_MAX
-		999_999.0,      -- SD_AVG
-		0.0,            -- SD_MIN
+		0.0,            -- SD_AVG
+		999_999.0,      -- SD_MIN
 		0,              -- SD_TOKENS
 		0               -- SD_FILESIZE
 	}

@@ -50,7 +50,7 @@ procedure configure_test_specs(sequence args)
 			abort(1, "Control file not found: %s\n", { cntl_file })
 		end if
 
-		test[TEST_CHECKSUM] = read_file( cntl_file, TEXT_MODE )
+		test[TEST_CONTROL] = read_file( cntl_file, TEXT_MODE )
 
 		common:tests &= { test }
 		i += 1

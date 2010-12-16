@@ -21,6 +21,16 @@ public procedure run_tests()
 		sequence   subfname = common:submissions[i][SUB_FILENAME]
 		integer    filesize = common:submissions[i][SUB_SIZE]
 		integer    tokcount = common:submissions[i][SUB_TOK_COUNT]
+		integer       is_pp = match("-pp", subfname)
+
+		-- Is this a pre-processor?
+		if match("-pp", subfname) then
+			sequence subfname_dir = dirname(subfname)
+
+			chdir(subfname_dir)
+
+			is_pp = 1
+		end if
 
 		printf(1, "%3d%% (%3d/%3d) %s/%s\n", {
 			floor(100 * (i / total_submissions)),
@@ -41,34 +51,23 @@ public procedure run_tests()
 			sub[SD_TOKENS]   = tokcount
 
 			for k = 1 to test[TEST_COUNT] do
-				sequence result_file = subfname & "." & test[TEST_NAME]
+				sequence result_file = subfname & "." & test[TEST_NAME] & ".log"
 				sequence cmd
-				integer was_pp =0
 
-				if match("-pp", subfname) then
-					sequence subfname_dir = dirname(subfname)
-
-					chdir(subfname_dir)
-					cmd = sprintf("eui %s > %s", {
-						test[TEST_FILE], result_file
-					})
-
-					was_pp = 1
+				if is_pp then
+					cmd = sprintf("eui %s > %s", { test[TEST_FILE], result_file })
 				else
-					cmd = sprintf("eui %s %s > %s", {
-							subfname, test[TEST_FILE], result_file
-						})
+					cmd = sprintf("eui %s %s > %s", { subfname, test[TEST_FILE], result_file })
 				end if
 
 				atom it_start = time()
 				system(cmd)
 				atom it_dur = time() - it_start
 
-				if was_pp then
-					chdir(cwd)
-				end if
+				integer ok = equal( read_file( result_file, TEXT_MODE ), test[TEST_CONTROL])
+				delete_file(result_file)
 
-				if not equal( read_file( result_file, TEXT_MODE ), test[TEST_CHECKSUM]) then
+				if not ok then
 					sub[SD_STATUS] = STATUS_FAIL
 					printf(1, " failed\n")
 					exit
@@ -90,7 +89,7 @@ public procedure run_tests()
 
 				printf(1, "%f", it_dur)
 			end for
-
+				
 			printf(1, "\n")
 
 			sub[SD_TOTAL] = time() - sub[SD_TOTAL]
@@ -113,5 +112,8 @@ public procedure run_tests()
 
 		printf(1, "\n")
 
+		if is_pp then
+			chdir(cwd)
+		end if
 	end for
 end procedure
