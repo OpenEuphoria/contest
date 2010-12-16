@@ -31,6 +31,7 @@ public procedure run_tests(integer mode)
 		integer    filesize = common:submissions[i][SUB_SIZE]
 		integer    tokcount = common:submissions[i][SUB_TOK_COUNT]
 		integer       is_pp = match("-pp", subfname)
+		integer      is_fun = match("-fun", subfname)
 
 		-- Is this a pre-processor?
 		if match("-pp", subfname) then
@@ -104,6 +105,7 @@ public procedure run_tests(integer mode)
 			sub[SD_TOTAL]    = time()
 			sub[SD_FILESIZE] = filesize
 			sub[SD_TOKENS]   = tokcount
+			sub[SD_FUN]      = is_fun
 
 			for k = 1 to test[TEST_COUNT] do
 				atom it_start = time()
