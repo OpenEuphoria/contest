@@ -16,4 +16,12 @@ function generate( sequence db_name )
 	return output
 end function
 
-printf(1, generate( "cpu-results.eds" ) )
+sequence cmd = command_line()
+for i = 3 to length( cmd ) do
+	puts(1, generate( cmd[i] ) )
+end for
+
+if length( cmd ) < 3 then
+	puts( 2, "You must specify at least one results database.\n" )
+	abort( 1 )
+end if
