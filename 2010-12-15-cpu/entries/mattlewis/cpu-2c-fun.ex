@@ -176,7 +176,7 @@ return 0;
 
 ifdef WINDOWS then
 	constant cc = "wcc386"
-	cmd = sprintf("%s \"%s\" -fo=\"%sobj\"", { cc, c_name, c_name[1..$-1] } )
+	cmd = sprintf("%s -q \"%s\" -fo=\"%sobj\"", { cc, c_name, c_name[1..$-1] } )
 	system( cmd )
 	cmd = sprintf("wlink sys nt file %sobj name %s > nul", { c_name[1..$-1], exe_name })
 	system(cmd)
