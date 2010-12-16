@@ -20,7 +20,10 @@ include std/map.e
 include std/math.e
 include std/sequence.e
 
+include euphoria/tokenize.e
+
 include common.e
+include db.e
 include test.e
 
 procedure configure_test_specs(sequence args)
@@ -71,7 +74,20 @@ procedure find_submissions(sequence ignored_users, sequence only_users)
 		end if
 
 		for j = 1 to length(entries) do
-			submissions &= {{ contestants[i][1], canonical_path(cont_dir & SLASH & entries[j][1]) }}
+			sequence canonical_name = canonical_path(cont_dir & SLASH & entries[j][1])
+			sequence tokens = tokenize:tokenize_file(canonical_name)
+	
+			-- Don't count the "#!/usr/bin/env eui" line
+			if tokens[1][1][TTYPE] = T_SHBANG then
+				tokens[1] = remove(tokens[1], 1)
+			end if
+	
+			submissions &= {{
+				contestants[i][1],
+				canonical_name,
+				file_length(canonical_name),
+				length(tokens[1])
+			}}
 		end for
 	end for
 end procedure
@@ -123,7 +139,12 @@ procedure main()
 		common:total_tests
 	})
 
+	db:open(datetime:format(common:contest_date, "%Y-%m-%d") & "-" & common:contest_name & SLASH &
+		"results.eds")
+
 	run_tests()
+
+	db:close()
 end procedure
 
 main()

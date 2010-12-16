@@ -19,8 +19,10 @@ public procedure run_tests()
 	integer total_submissions = length(common:submissions), status = STATUS_UNKNOWN
 
 	for i = 1 to total_submissions do
-		sequence contestant = common:submissions[i][1]
-		sequence submission = common:submissions[i][2]
+		sequence contestant = common:submissions[i][SUB_USER]
+		sequence submission = common:submissions[i][SUB_FILENAME]
+		integer    filesize = common:submissions[i][SUB_SIZE]
+		integer    tokcount = common:submissions[i][SUB_TOK_COUNT]
 
 		line()
 
@@ -32,7 +34,16 @@ public procedure run_tests()
 
 		for j = 1 to length(common:tests) do
 			sequence test = common:tests[j]
+
 			printf(1, "\t%s (%d): ", { test[TEST_NAME], test[TEST_COUNT] })
+
+			db:submission_key sk = new_sk(contestant, filename(submission), db:MODE_INTERP)
+			db:submission sub = new_submission()
+
+			sub[SD_NAME]     = test[TEST_NAME]
+			sub[SD_TOTAL]    = time()
+			sub[SD_FILESIZE] = filesize
+			sub[SD_TOKENS]   = tokcount
 
 			for k = 1 to test[TEST_COUNT] do
 				sequence result_file = submission & "." & test[TEST_NAME]
@@ -42,7 +53,7 @@ public procedure run_tests()
 
 				atom it_start = time()
 				system(cmd)
-				atom it_end = time()
+				atom it_dur = time() - it_start
 
 				if not equal(checksum(result_file), test[TEST_CHECKSUM]) then
 					status = STATUS_FAIL
@@ -50,14 +61,29 @@ public procedure run_tests()
 					exit
 				end if
 
+				sub[SD_COUNT] += 1
+
+				if it_dur < sub[SD_MIN] then
+					sub[SD_MIN] = it_dur
+				end if
+
+				if it_dur > sub[SD_MAX] then
+					sub[SD_MAX] = it_dur
+				end if
+
 				if k > 1 then
 					printf(1, ", ")
 				end if
 
-				printf(1, "%f", it_end - it_start)
+				printf(1, "%f", it_dur)
 			end for
 
 			printf(1, "\n")
+
+			sub[SD_TOTAL] = time() - sub[SD_TOTAL]
+			sub[SD_AVG] = sub[SD_TOTAL] / sub[SD_COUNT]
+
+			add_submission(sk, sub)
 		end for
 
 		line()

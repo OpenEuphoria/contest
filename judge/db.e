@@ -9,18 +9,19 @@
 -- |  *1 | user     | Username on openeuphoria.org     |
 -- |  *2 | file     | Filename of the given submission |
 -- |  *3 | mode     | INTERP/TRANS                     |
--- |   1 | time     | Testing timestamp                |
--- |   2 | status   | PASS/FAIL status indicator       |
--- |   3 | count    | Count of iterations executed     |
--- |   4 | total    | Total time taken for all tests   |
--- |   5 | max      | Maximum iteration time           |
--- |   6 | avg      | Average iteration time           |
--- |   7 | min      | Minimum iteration time           |
--- |   8 | tokens   | Number of tokens                 |
--- |   9 | filesize | Filesize in bytes                |
+-- |   1 | name     | Test name                        |
+-- |   2 | time     | Testing timestamp                |
+-- |   3 | status   | PASS/FAIL status indicator       |
+-- |   4 | count    | Count of iterations executed     |
+-- |   5 | total    | Total time taken for all tests   |
+-- |   6 | max      | Maximum iteration time           |
+-- |   7 | avg      | Average iteration time           |
+-- |   8 | min      | Minimum iteration time           |
+-- |   9 | tokens   | Number of tokens                 |
+-- |  10 | filesize | Filesize in bytes                |
 --
 
-namespace jdb
+namespace db
 
 include std/console.e
 include std/datetime.e
@@ -32,7 +33,7 @@ constant
 
 public enum
 	SK_USER, SK_FILE, SK_MODE,
-	SD_TIME, SD_STATUS,
+	SD_NAME, SD_TIME, SD_STATUS,
 	SD_COUNT, SD_TOTAL, SD_MAX, SD_AVG, SD_MIN,
 	SD_TOKENS, SD_FILESIZE
 
@@ -51,15 +52,16 @@ end type
 
 public type submission(object o)
 	if not sequence(o) then return 0 end if
-	if not datetime(o[1]) then return 0 end if -- SK_TIME
-	if not integer(o[2]) then return 0 end if  -- SK_STATUS
-	if not integer(o[3]) then return 0 end if  -- SK_COUNT
-	if not atom(o[4]) then return 0 end if     -- SK_TOTAL
-	if not atom(o[5]) then return 0 end if     -- SK_MAX
-	if not atom(o[6]) then return 0 end if     -- SK_AVG
-	if not atom(o[7]) then return 0 end if     -- SK_MIN
-	if not integer(o[8]) then return 0 end if  -- SK_TOKENS
-	if not integer(o[9]) then return 0 end if  -- SK_FILESIZE
+	if not sequence(o[1]) then return 0 end if -- SK_NAME
+	if not datetime(o[2]) then return 0 end if -- SK_TIME
+	if not integer(o[3]) then return 0 end if  -- SK_STATUS
+	if not integer(o[4]) then return 0 end if  -- SK_COUNT
+	if not atom(o[5]) then return 0 end if     -- SK_TOTAL
+	if not atom(o[6]) then return 0 end if     -- SK_MAX
+	if not atom(o[7]) then return 0 end if     -- SK_AVG
+	if not atom(o[8]) then return 0 end if     -- SK_MIN
+	if not integer(o[9]) then return 0 end if  -- SK_TOKENS
+	if not integer(o[10]) then return 0 end if -- SK_FILESIZE
 
 	return 1
 end type
@@ -70,15 +72,16 @@ end function
 
 public function new_submission()
 	return {
-		datetime:now(),
-		STATUS_UNKNOWN,
-		0,
-		0.0,
-		0.0,
-		0.0,
-		0.0,
-		0,
-		0
+		"UNKNOWN",      -- SD_NAME
+		datetime:now(), -- SD_TIME
+		STATUS_UNKNOWN, -- SD_STATUS
+		0,              -- SD_COUNT
+		0.0,            -- SD_TOTAL
+		0.0,            -- SD_MAX
+		999_999.0,      -- SD_AVG
+		0.0,            -- SD_MIN
+		0,              -- SD_TOKENS
+		0               -- SD_FILESIZE
 	}
 end function
 
