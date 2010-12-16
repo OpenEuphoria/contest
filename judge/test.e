@@ -33,14 +33,7 @@ public procedure run_tests(integer mode)
 		integer       is_pp = match("-pp", subfname)
 		integer      is_fun = match("-fun", subfname)
 
-		-- Is this a pre-processor?
-		if match("-pp", subfname) then
-			sequence subfname_dir = dirname(subfname)
-
-			chdir(subfname_dir)
-
-			is_pp = 1
-		end if
+		chdir(dirname(subfname))
 
 		printf(1, "%3d%% (%3d/%3d) %s/%s\n", {
 			floor(100 * (i / total_submissions)),
@@ -162,8 +155,6 @@ public procedure run_tests(integer mode)
 
 		printf(1, "\n")
 
-		if is_pp then
-			chdir(cwd)
-		end if
+		chdir(cwd)
 	end for
 end procedure

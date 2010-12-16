@@ -152,7 +152,7 @@ procedure main()
 		"results.eds")
 
 	if map:get(opts, "no-interpret") = 0 then
-		printf(1, repeat('=', 10) & " INTERPRETED TESTS" & repeat('=', 10) & "\n\n")
+		printf(1, repeat('=', 10) & " INTERPRETED TESTS " & repeat('=', 10) & "\n\n")
 		run_tests(MODE_INTERP)
 	end if
 
