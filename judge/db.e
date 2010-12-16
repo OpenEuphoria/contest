@@ -160,5 +160,10 @@ ifdef MOCK then
 		10, 10 * 2.203, 0.203, 0.204, 0.203,
 		89_893_150, 1_291_928, 0, "brute log\n0 1 2 3\n"
 	})
+	add_submission({ "mattlewis", "cpu-fail.ex", MODE_TRANS, "speed.cpu" }, {
+		datetime:now(), STATUS_FAIL,
+		10, -1, 0.203, 0.204, 0.203,
+		89_893_150, 1_291_928, 0, "fail log\n0 1 2 3\n"
+	})
 	close()
 end ifdef

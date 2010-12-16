@@ -10,14 +10,15 @@ contest_dir = "2010-12-15-cpu"
 
 function generate( sequence db_name )
 	sequence output = `
+!!CONTEXT:report.txt
 @@(title CPU Emulator Contest)@
 %%maxnumlevel = 4
 %%toclevel = 3
-<<TOC level=1>>
+<<TOC level=1 depth=3>>
 
 `
 	
-	output &= "= Result Tables\n"
+	output &= "= Result Tables\n<<LEVELTOC level=1 depth=4>>\n"
 	
 	report:open_db( db_name )
 	sequence sql = `
@@ -33,7 +34,7 @@ order by result, totaltime
 
 `
 	EUSQLRESULT ok = run_sql( sql )
-	ok[2] = format_entries( ok[2] )
+	ok[2] = dnf_entries( format_entries( ok[2] ), 4 )
 	output &= write_table(
 		"speed.cpu Interpreted Speed test",
 		ok,
@@ -54,7 +55,7 @@ order by result, totaltime
 
 `
 	ok = run_sql( sql )
-	ok[2] = format_entries( ok[2] )
+	ok[2] = dnf_entries( format_entries( ok[2] ), 4 )
 	output &= write_table(
 		"speed.cpu Translated Speed test",
 		ok,
@@ -76,7 +77,7 @@ order by result, totaltime
 
 `
 	ok = run_sql( sql )
-	ok[2] = format_entries( ok[2] )
+	ok[2] = dnf_entries( format_entries( ok[2] ), 4 )
 	output &= write_table(
 		"speed.cpu Free for All Speed test",
 		ok,
@@ -141,7 +142,7 @@ order by pass_score desc, tokens
 
 `
 	ok = run_sql( sql )
-	ok[2] = format_entries( ok[2] )
+	ok[2] = dnf_entries( format_entries( ok[2] ), 3 )
 	output &= write_table(
 		"Overall by speed",
 		ok,
@@ -166,22 +167,25 @@ from submissions
 order by id.user, id.file, id.testname
 `
 	EUSQLRESULT ok = run_sql( sql )
-	ok[2] = format_entries( ok[2] )
+	sequence unformatted_entries = ok[2]
+	sequence formatted_entries   = format_entries( ok[2] )
 	
-	sequence output = "= Submission Log\n"
+	sequence output = "= Submission Log\n<<LEVELTOC level=1 depth=4>>\n"
 	sequence current_user = ""
 	sequence current_file = ""
-	sequence logs = ok[2]
-	for i = 1 to length( logs ) do
-		sequence current_log = logs[i]
+	
+	for i = 1 to length( formatted_entries ) do
+		sequence current_log = formatted_entries[i]
 		if compare( current_user, current_log[1] ) then
+			current_user = current_log[1]
 			output &= sprintf( "\n== %s\n", { current_user } )
 			current_file = ""
 		end if
 		
 		if compare( current_file, current_log[2] ) then
-			output &= sprintf( "=== %s\n", { current_file } )
 			current_file = current_log[2]
+			output &= sprintf( "=== %s\n%s\n", { unformatted_entries[i][2], current_file } )
+			
 		end if
 		
 		output &= sprintf( "==== %s\nOutput Log:\n\n{{{\n%s\n}}}\n", { current_log[3], current_log[4] } )
@@ -196,8 +200,7 @@ sequence cmd = command_line()
 for i = 3 to length( cmd ) do
 	puts(1, generate( cmd[i] ) )
 end for
-
-display( run_sql( "select * from submissions" ) )
+-- display( run_sql("select * from submissions") )
 if length( cmd ) < 3 then
 	puts( 2, "You must specify at least one results database.\n" )
 	abort( 1 )
