@@ -29,7 +29,7 @@ export procedure open_db( sequence db_name )
 		-- nope!  have to convert...
 		sequence submissions = read_submissions()
 		db_close()
-		db_name = pathname( db_name ) & "eusql-" & filename( db_name )
+		db_name = pathname( db_name ) & SLASH & "eusql-" & filename( db_name )
 		delete_file( db_name )
 		create_db( db_name )
 		create_table( db_name, submission_tn )
@@ -154,7 +154,7 @@ export function format_entries( sequence submissions, integer user_column = 1, i
 		sequence sub        = submissions[i]
 		sequence user_name  = sub[user_column]
 		sequence entry_name = sub[entry_column]
-		sub[entry_column] = sprintf( "[[%s->hg:contest/file/default/%s/entries/%s/%s]]", 
+		sub[entry_column] = sprintf( "[[%s->hg/contest/file/default/%s/entries/%s/%s]]", 
 			{ entry_name, contest_dir, user_name, entry_name } )
 		submissions[i] = sub
 	end for
