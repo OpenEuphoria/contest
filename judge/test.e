@@ -49,7 +49,6 @@ public procedure run_tests(integer mode)
 			db:submission_key sk = new_sk(contestant, filename(subfname), mode, test[TEST_NAME])
 			db:submission sub = new_submission()
 
-			sub[SD_TOTAL]    = time()
 			sub[SD_FILESIZE] = filesize
 			sub[SD_TOKENS]   = tokcount
 			sub[SD_FUN]      = is_fun
@@ -102,6 +101,9 @@ public procedure run_tests(integer mode)
 					cmd = sprintf("%s %s > %s", { executable_name, test[TEST_FILE], result_file })
 			end switch
 
+			-- Setup/Translation is done, start the timer
+			sub[SD_TOTAL] = time()
+
 			for k = 1 to test[TEST_COUNT] do
 				atom it_start = time()
 				system(cmd)
@@ -140,6 +142,7 @@ public procedure run_tests(integer mode)
 				
 			printf(1, "\n")
 
+			-- Stop the timer, all done testing
 			sub[SD_TOTAL] = time() - sub[SD_TOTAL]
 
 			if sub[SD_COUNT] = 0 or sub[SD_STATUS] = STATUS_FAIL then
