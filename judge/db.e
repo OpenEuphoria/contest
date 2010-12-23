@@ -146,19 +146,24 @@ ifdef MOCK then
 	add_submission({ "jeremy", "cpu1.ex", MODE_INTERP, "speed.cpu" }, {
 		datetime:now(), STATUS_PASS,
 		10, 10 * 0.203, 0.203, 0.205, 0.204,
-		150, 1928, 1
+		150, 1928, 1, "cpu1 log file\nhas some\nstuff\n1 2\n0\n"
 	})
 	
 	add_submission({ "mattlewis", "cpu-brute.ex", MODE_INTERP, "basics2.cpu" }, {
 		datetime:now(), STATUS_PASS,
 		10, 10 * 230.203, 230.203, 230.204, 230.203,
-		89_893_150, 1_291_928, 0
+		89_893_150, 1_291_928, 0, "brute log\n0 1 2 3\n"
 	})
 	
 	add_submission({ "mattlewis", "cpu-brute.ex", MODE_TRANS, "speed.cpu" }, {
 		datetime:now(), STATUS_PASS,
 		10, 10 * 2.203, 0.203, 0.204, 0.203,
-		89_893_150, 1_291_928, 0
+		89_893_150, 1_291_928, 0, "brute log\n0 1 2 3\n"
+	})
+	add_submission({ "mattlewis", "cpu-fail.ex", MODE_TRANS, "speed.cpu" }, {
+		datetime:now(), STATUS_FAIL,
+		10, -1, 0.203, 0.204, 0.203,
+		89_893_150, 1_291_928, 0, "fail log\n0 1 2 3\n"
 	})
 	close()
 end ifdef

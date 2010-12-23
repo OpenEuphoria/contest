@@ -29,7 +29,7 @@ export procedure open_db( sequence db_name )
 		-- nope!  have to convert...
 		sequence submissions = read_submissions()
 		db_close()
-		db_name = pathname( db_name ) & "eusql-" & filename( db_name )
+		db_name = pathname( db_name ) & SLASH & "eusql-" & filename( db_name )
 		delete_file( db_name )
 		create_db( db_name )
 		create_table( db_name, submission_tn )
@@ -89,9 +89,9 @@ function read_submissions()
 	return submissions
 end function
 
-export function write_table( sequence title, sequence results, sequence sort_columns = {}, integer delta_column = 0 )
+export function write_table( sequence title, sequence results, sequence sort_columns = {}, integer delta_column = 0, integer header_level = 2 )
 	
-	sequence output = sprintf("\n== %s\n", { title } )
+	sequence output = sprintf("\n%s %s\n", { repeat( '=', header_level ), title } )
 	
 	output &= "||"
 	
@@ -117,8 +117,8 @@ export function write_table( sequence title, sequence results, sequence sort_col
 	output &= '\n'
 	
 	sequence data = results[2]
-	atom leader = 0
-	if length( data ) and delta_column then
+	object leader = 0
+	if length( data ) and delta_column and atom( data[1][delta_column] ) then
 		leader = data[1][delta_column]
 	end if
 	for i = 1 to length( data ) do
@@ -134,10 +134,14 @@ export function write_table( sequence title, sequence results, sequence sort_col
 		end for
 		
 		if delta_column then
-			if delta_asc then
-				output &= sprintf("%g|", record[delta_column] - leader )
+			if atom( record[delta_column] ) then
+				if delta_asc then
+					output &= sprintf("%g|", record[delta_column] - leader )
+				else
+					output &= sprintf("%g|", leader - record[delta_column] )
+				end if
 			else
-				output &= sprintf("%g|", leader - record[delta_column] )
+				output &= "N/A|"
 			end if
 		end if
 		output &= '\n'
@@ -150,8 +154,20 @@ export function format_entries( sequence submissions, integer user_column = 1, i
 		sequence sub        = submissions[i]
 		sequence user_name  = sub[user_column]
 		sequence entry_name = sub[entry_column]
-		sub[entry_column] = sprintf( "[[%s->hg:contest/file/default/%s/entries/%s/%s]]", 
+		sub[entry_column] = sprintf( "[[%s->hg/contest/file/default/%s/entries/%s/%s]]", 
 			{ entry_name, contest_dir, user_name, entry_name } )
+		submissions[i] = sub
+	end for
+	return submissions
+end function
+
+export function dnf_entries( sequence submissions, integer time_column )
+	for i = 1 to length( submissions ) do
+		sequence sub    = submissions[i]
+		atom time_value = sub[time_column]
+		if time_value < 0 then
+			sub[time_column] = "DNF"
+		end if
 		submissions[i] = sub
 	end for
 	return submissions
