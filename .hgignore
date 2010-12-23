@@ -1,11 +1,6 @@
-ex.err
 logging
-.exe
 results
 judge/cpu.eds
-build-
-.obj
-.pp.
 
 syntax: regexp
 2010-12-15-cpu/entries/.*/*\.cpu
